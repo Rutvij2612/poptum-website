@@ -1,0 +1,22 @@
+Failed to seed admin: error: column "first_name" of relation "users" does not exist
+    at C:\Users\RUTVIJ\OneDrive\Desktop\POPTUM\PoptumCatalog\node_modules\pg-pool\index.js:45:11
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at async run (C:\Users\RUTVIJ\OneDrive\Desktop\POPTUM\PoptumCatalog\script\seed-admin.ts:9:5) {
+  length: 128,
+  severity: 'ERROR',
+  code: '42703',
+  detail: undefined,
+  hint: undefined,
+  position: '28',
+  internalPosition: undefined,
+  internalQuery: undefined,
+  where: undefined,
+  schema: undefined,
+  table: undefined,
+  column: undefined,
+  dataType: undefined,
+  constraint: undefined,
+  file: 'parse_target.c',
+  line: '1073',
+  routine: 'checkInsertTargets'
+}
