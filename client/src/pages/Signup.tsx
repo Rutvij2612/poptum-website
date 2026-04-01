@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
 import Navbar from "@/components/Navbar";
+const API = import.meta.env.VITE_API_URL;
 
 export default function Signup() {
   const [, navigate] = useLocation();
@@ -49,8 +50,7 @@ export default function Signup() {
     }
 
     try {
-      const res = await fetch("/api/auth/signup", {
-        method: "POST",
+const res = await fetch(`${API}/api/auth/signup`, {        method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
       });

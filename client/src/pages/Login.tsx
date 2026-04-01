@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
 import Navbar from "@/components/Navbar";
+const API = import.meta.env.VITE_API_URL;
 
 export default function Login() {
   const [, navigate] = useLocation();
@@ -19,8 +20,7 @@ export default function Login() {
     setLoading(true);
 
     try {
-      const res = await fetch("/api/auth/login", {
-        method: "POST",
+const res = await fetch(`${API}/api/auth/login`, {        method: "POST",
         headers: {
           "Content-Type": "application/json",
         },

@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import Navbar from "@/components/Navbar";
+const API = import.meta.env.VITE_API_URL;
 
 const ORDER_STATUSES = ["Ordered", "Processing", "Shipped", "Delivered", "Cancelled"] as const;
 type OrderStatus = (typeof ORDER_STATUSES)[number];
@@ -48,7 +49,7 @@ function StatusBadge({ status }: { status: string }) {
 }
 
 function fetchOrders(): Promise<Order[]> {
-  return fetch("/api/admin/orders").then((res) => {
+  return fetch(`${API}/api/admin/orders`).then((res) => {
     if (!res.ok) throw new Error("Failed to fetch orders");
     return res.json();
   });
@@ -79,7 +80,7 @@ export default function AdminDashboard() {
     if (!orderId) return;
     setStatusUpdating(orderId);
     try {
-      const res = await fetch(`/api/orders/${orderId}/status`, {
+      const res = await fetch(`${API}/api/orders/${orderId}/status`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ status: newStatus }),
@@ -107,7 +108,7 @@ export default function AdminDashboard() {
     if (!deleteOrder?.id) return;
     const idToDelete = deleteOrder.id;
     try {
-      const res = await fetch(`/api/orders/${idToDelete}`, { method: "DELETE" });
+      const res = await fetch(`${API}/api/orders/${idToDelete}`, { method: "DELETE" });
       if (!res.ok) return;
       setOrders((prev) => prev.filter((o) => o.id !== idToDelete));
       setDeleteOrder(null);
@@ -321,7 +322,7 @@ function AddOrderModal({
     setError("");
     setSubmitting(true);
     try {
-      const res = await fetch("/api/admin/orders", {
+      const res = await fetch(`${API}/api/admin/orders`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -481,7 +482,7 @@ function EditOrderModal({
     setError("");
     setSubmitting(true);
     try {
-      const res = await fetch(`/api/orders/${order.id}`, {
+      const res = await fetch(`${API}/api/orders/${order.id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
