@@ -2,9 +2,9 @@ import { useLanguage } from '@/lib/language-context';
 import {
   SiInstagram,
   SiFacebook,
-  SiLinkedin,
   SiX,
 } from 'react-icons/si';
+import { FaLinkedin } from "react-icons/fa";
 
 export default function Footer() {
   const { t, language, setLanguage } = useLanguage();
@@ -124,7 +124,7 @@ export default function Footer() {
                 className="w-10 h-10 rounded-full bg-muted flex items-center justify-center text-muted-foreground hover:text-primary hover:bg-muted/80 transition-colors cursor-pointer"
                 data-testid="social-linkedin"
               >
-                <SiLinkedin className="w-5 h-5" />
+                <FaLinkedin className="w-5 h-5" />
               </a>
               <a
                 href="https://x.com/Poptum_Makhana"
