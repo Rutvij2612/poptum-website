@@ -84,8 +84,8 @@ export default function Hero() {
   };
 
   const downloadCatalogue = () => {
-    window.open('/api/catalogue', '_blank');
-  };
+  window.open('/catalogue.pdf', '_blank');
+};
 
   return (
     <section
@@ -211,10 +211,10 @@ export default function Hero() {
       <div className="relative z-40 max-w-4xl mx-auto px-4 text-center mt-[-8vh]">
         <div className="mb-8 flex justify-center drop-shadow-md">
           <img
-            src="/poptum_logo.png"
-            alt="Poptum"
-            className="h-24 sm:h-32 lg:h-40 object-contain animate-fade-in-down drop-shadow-lg"
-          />
+  src="/poptum_logo.png"
+  alt="Poptum"
+  className="h-24 sm:h-32 lg:h-40 object-contain animate-fade-in-down drop-shadow-lg"
+/>
         </div>
 
         <div className="mb-8 max-w-3xl mx-auto animate-fade-in space-y-1.5 drop-shadow-sm">
@@ -246,14 +246,14 @@ export default function Hero() {
             {t.hero.exploreFlavours}
           </Button>
           <Button
-            size="lg"
-            variant="outline"
-            onClick={downloadCatalogue}
-            className="min-w-[200px] bg-white/70 backdrop-blur-md text-foreground border-border hover:bg-accent hover:text-accent-foreground transition-all duration-300 hover:scale-105 hover:shadow-lg shadow-sm"
-            data-testid="button-download-catalogue"
-          >
-            {t.hero.downloadCatalogue}
-          </Button>
+  asChild
+  size="lg"
+  variant="outline"
+  className="min-w-[200px] bg-white/70 backdrop-blur-md text-foreground border-border hover:bg-accent hover:text-accent-foreground transition-all duration-300 hover:scale-105 hover:shadow-lg shadow-sm"
+>
+<a href="/catalogue.pdf" target="_blank" rel="noopener noreferrer">    {t.hero.downloadCatalogue}
+  </a>
+</Button>
         </div>
       </div>
 

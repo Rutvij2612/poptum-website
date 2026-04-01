@@ -793,10 +793,10 @@ export async function registerRoutes(
   app.get("/api/catalogue", (req, res) => {
     const pdfPath = path.join(
       process.cwd(),
-      "attached_assets",
-      "poptum_1764845780048.pdf",
+      "assets",
+      "catalogue.pdf",
     );
-    res.download(pdfPath, "Poptum-Catalogue.pdf", (err) => {
+    res.download(pdfPath, "catalogue.pdf", (err) => {
       if (err) {
         console.error("Error downloading catalogue:", err);
         res.status(404).json({ error: "Catalogue not found" });

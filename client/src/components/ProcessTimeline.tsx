@@ -39,7 +39,9 @@ export default function ProcessTimeline() {
               const Icon = step.icon;
               const stepData = t.process[step.key as keyof typeof t.process] as { title: string; description: string };
               return (
-                <div className="flex flex-col items-center text-center w-1/5 relative z-10 animate-fade-in-up"
+                <div 
+                key={step.key}
+                className="flex flex-col items-center text-center w-1/5 relative z-10 animate-fade-in-up"
      style={{ animationDelay: `${index * 0.15}s` }}>
 
   <div className="w-24 h-24 rounded-full bg-primary flex items-center justify-center mb-3 shadow-lg">

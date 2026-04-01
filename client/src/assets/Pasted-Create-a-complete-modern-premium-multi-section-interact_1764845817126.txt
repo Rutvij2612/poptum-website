@@ -1,0 +1,183 @@
+Create a complete, modern, premium, multi-section, interactive website for my snack brand Poptum.
+It should be built using clean HTML, CSS, and JavaScript (no frameworks unless necessary).
+The website must be fully responsive and visually attractive.
+Provide clean code, ideally separated into index.html, styles.css, script.js.
+Also include placeholder images where needed.
+
+🔵 Brand Summary (Use this everywhere)
+
+Poptum is a premium roasted Makhana (Fox Nut) brand.
+Makhana originates from Bihar, India. It is a nutritious superfood—protein rich, low calorie, antioxidant rich, gluten-free, vegan, and naturally wholesome.
+Poptum brings roasted Makhana to Germany in four flavours:
+
+Barbeque
+
+Himalayan Pink Salt & Pepper
+
+Peri Peri
+
+Cream & Onion
+
+Vision: Snacks that balance taste, health, and happiness.
+Mission: Make healthy snacking delicious and global.
+Quality: Roasted in olive oil, lab-tested, 12-month shelf life, sustainable packaging.
+
+Use this text in various sections.
+
+🔵 Website Requirements
+🔹 1. Hero Section
+
+Beautiful full-screen hero
+
+Product mockup placeholders
+
+Tagline: “Poptum – The Healthy Crunch”
+
+Subtext: “Premium roasted Makhana from India to Germany.”
+
+Buttons: “Explore Flavours” & “Download Catalogue (PDF placeholder)”
+
+🔹 2. Language Switcher (EN / DE)
+
+The entire site must support:
+🇬🇧 English
+🇩🇪 German
+• Put language toggle in top-right
+• Store content in JS objects
+• Switching language updates all visible text
+
+🔹 3. Navigation Bar
+
+Sections:
+
+Home
+
+About
+
+Flavours
+
+Process
+
+Benefits
+
+Gallery
+
+Contact
+
+Sticky navbar with smooth scroll.
+
+🔹 4. About Section
+
+Story-driven with images.
+Use text from the catalogue to describe brand vision & mission.
+
+🔹 5. Flavours Section (Interactive)
+
+Create a card for each flavour:
+
+Card image
+
+Name
+
+Short description
+
+Button → opens a modal popup with:
+
+Inside modal:
+
+Big product image
+
+Full flavour description
+
+Ingredients
+
+Nutrition facts
+
+Taste profile
+
+Serving ideas
+
+🔹 6. Process Section
+
+“From Bihar Farms → Roasting → Flavouring → Packaging → Export to Germany”
+Use icons + timeline design.
+
+🔹 7. Benefits Section
+
+Use icons for:
+
+High protein
+
+Antioxidants
+
+Low calorie
+
+Gluten-free
+
+Vegan
+
+Olive-oil roasted
+
+Lab tested
+
+Long shelf life
+
+🔹 8. Gallery Section
+
+Grid of product + lifestyle placeholders.
+
+🔹 9. Contact Section
+
+Include:
+Website: www.poptum.in
+
+Email: info.poptum@gmail.com
+
+Phone: +91 9601061178 / +49 15510542629 / +49 15209498862
+Company details (from catalogue)
+
+Also include a simple contact form.
+
+🔹 10. Footer
+
+Language selector
+
+Social icons
+
+“Poptum – A Brand by Moforce Exim”
+
+🔵 Design Requirements
+
+Premium snack brand aesthetic
+
+Colors: cream, beige, olive green, gold accents
+
+Rounded cards
+
+Drop shadows
+
+Smooth animations
+
+Hover effects
+
+Scroll reveals
+
+Mobile-first layout
+
+🔵 Output Requirements
+
+Provide:
+
+index.html
+
+styles.css
+
+script.js
+
+Images folder with placeholder URLs
+
+Instructions on linking the PDF later
+
+All text duplicated in English + German inside JS for language toggle
+
+Now generate the full website code with all sections, full UI, interactions, and bilingual support.
