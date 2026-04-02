@@ -125,7 +125,7 @@ export default function AdminDashboard() {
     <div className="min-h-screen bg-white">
       <Navbar />
 
-      <main className="px-6 py-8 pt-28 max-w-[1800px] mx-auto">
+      <main className="px-6 py-8 pt-28 max-w-450 mx-auto">
         <div className="flex items-center justify-between mb-6">
           <h1 className="text-2xl font-bold">Admin Dashboard</h1>
           <button
@@ -166,8 +166,8 @@ export default function AdminDashboard() {
                     <td className="px-4 py-3 text-sm text-gray-900">{order.full_name ?? "—"}</td>
                     <td className="px-4 py-3 text-sm text-gray-600">{order.email ?? "—"}</td>
                     <td className="px-4 py-3 text-sm text-gray-600">{order.phone ?? "—"}</td>
-                    <td className="px-4 py-3 text-sm text-gray-600 max-w-[180px] truncate" title={order.address || undefined}>{order.address || "—"}</td>
-                    <td className="px-4 py-3 text-sm text-gray-600 max-w-[160px] truncate" title={(order.product_ordered || order.product) || undefined}>{(order.product_ordered || order.product) ?? "—"}</td>
+                    <td className="px-4 py-3 text-sm text-gray-600 max-w-45 truncate" title={order.address || undefined}>{order.address || "—"}</td>
+                    <td className="px-4 py-3 text-sm text-gray-600 max-w-40 truncate" title={(order.product_ordered || order.product) || undefined}>{(order.product_ordered || order.product) ?? "—"}</td>
                     <td className="px-4 py-3 text-sm text-gray-900">{order.quantity ?? "—"}</td>
                     <td className="px-4 py-3 text-sm text-gray-900">€{order.total_price ?? "0"}</td>
                     <td className="px-4 py-3">
@@ -280,7 +280,7 @@ export default function AdminDashboard() {
           <div className="bg-white rounded-lg shadow-xl p-6 max-w-lg w-full mx-4" onClick={(e) => e.stopPropagation()}>
             <h3 className="text-lg font-semibold mb-2">Customer Issue / Complaint</h3>
             <p className="text-sm text-gray-500 mb-2">Order ID: {issueOrder.order_id}</p>
-            <div className="rounded border border-gray-200 bg-gray-50 p-4 min-h-[80px] text-gray-700">
+            <div className="rounded border border-gray-200 bg-gray-50 p-4 min-h-20 text-gray-700">
               {issueOrder.issue_note || "No issue or complaint recorded for this order."}
             </div>
             <div className="mt-4 flex justify-end">
