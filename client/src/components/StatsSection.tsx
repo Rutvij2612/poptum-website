@@ -110,7 +110,7 @@ export default function StatsSection() {
   return (
     <section
       id="global-stats"
-      className="py-20 lg:py-28 bg-gradient-to-br from-background to-card"
+      className="py-20 lg:py-28 bg-linear-to-br from-background to-card"
       data-testid="stats-section"
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
