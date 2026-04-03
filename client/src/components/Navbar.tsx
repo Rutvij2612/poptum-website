@@ -48,31 +48,14 @@ export default function Navbar() {
         <div className="flex items-center justify-between h-16 gap-4">
           <button
             onClick={() => scrollToSection('#home')}
-            className="flex items-center gap-3 group"
+            className="flex items-center group"
             data-testid="logo-button"
           >
-            <div className="h-10 w-10 rounded-full bg-accent/40 flex items-center justify-center shadow-sm group-hover:shadow-md group-hover:scale-105 transition-transform duration-200">
-              <span className="text-lg font-black tracking-tight text-primary">
-                P
-              </span>
-            </div>
-            <div className="flex flex-col items-start">
-              <span
-                className="font-black text-xl sm:text-2xl leading-none tracking-tight"
-                style={{
-                  fontFamily: 'var(--font-display)',
-                  letterSpacing: '-0.03em',
-                }}
-              >
-                POPTUM
-              </span>
-              <span
-                className="text-[9px] sm:text-[10px] font-semibold mt-0.5 tracking-[0.25em] uppercase text-muted-foreground"
-                style={{ fontFamily: 'var(--font-sans)' }}
-              >
-                POP · CRUNCH · REPEAT
-              </span>
-            </div>
+            <img 
+              src="/poptum_logo.png" 
+              alt="Poptum Logo" 
+              className="h-10 sm:h-12 w-auto object-contain group-hover:scale-105 transition-transform duration-200"
+            />
           </button>
 
           <div className="hidden md:flex items-center gap-1">
