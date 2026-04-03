@@ -288,10 +288,13 @@ export async function registerRoutes(
         timestamp: new Date().toISOString(),
       });
 
-      await sendContactEmail({
+      // Fire and forget email sending so user doesn't wait for SMTP
+      sendContactEmail({
         name: data.name,
         email: data.email,
         message: data.message,
+      }).catch(err => {
+        console.error("Failed to send background contact email:", err);
       });
 
       res.json({
