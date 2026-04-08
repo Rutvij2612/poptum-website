@@ -141,9 +141,12 @@ export default function Footer() {
           </div>
         </div>
 
-        <div className="border-t mt-8 pt-8 text-center">
+        <div className="border-t mt-8 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
           <p className="text-sm text-muted-foreground">
             &copy; {currentYear} Poptum. {t.footer.rights}
+          </p>
+          <p className="text-sm text-muted-foreground">
+            {t.footer.developedBy || 'Developed by'} <a href="https://www.linkedin.com/in/rutvij-borisagar-154717288" target="_blank" rel="noopener noreferrer" className="hover:text-primary transition-colors hover:underline">Rutvij B. Borisagar</a>
           </p>
         </div>
       </div>

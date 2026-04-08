@@ -44,7 +44,7 @@ export default function ProductsSection() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12 animate-fade-in-down">
           <h2 className="font-heading text-4xl lg:text-5xl font-bold text-foreground mb-4">
-            {t.products?.title || 'Makhana Byproducts'}
+            {t.products?.title || 'Poptum Value-Added Products'}
           </h2>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
             {t.products?.subtitle || 'Discover the diverse range of Makhana-based products'}

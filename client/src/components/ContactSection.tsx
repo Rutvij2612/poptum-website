@@ -1,9 +1,10 @@
 import { useState } from 'react';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent } from '@/components/ui/card';
-import { Mail, Phone, Globe, MapPin } from 'lucide-react';
+import { Mail, Phone, Globe, MapPin, Star } from 'lucide-react';
 import { useLanguage } from '@/lib/language-context';
 import { useToast } from '@/hooks/use-toast';
 import { CheckCircle2 } from 'lucide-react';
@@ -17,6 +18,37 @@ export default function ContactSection() {
     name: '',
     email: '',
     message: '',
+  });
+  const [hoveredRating, setHoveredRating] = useState(0);
+  const [userRating, setUserRating] = useState(0);
+
+  const queryClient = useQueryClient();
+
+  const { data: ratingData } = useQuery({
+    queryKey: ['ratings'],
+    queryFn: async () => {
+      const res = await fetch('/api/ratings');
+      return res.json();
+    }
+  });
+
+  const submitRating = useMutation({
+    mutationFn: async (rating: number) => {
+      const res = await fetch('/api/ratings', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ rating })
+      });
+      if (!res.ok) throw new Error('Failed to submit rating');
+      return res.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['ratings'] });
+      toast({
+        title: "Success",
+        description: "Thank you for your rating!",
+      });
+    }
   });
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -131,6 +163,8 @@ export default function ContactSection() {
                   />
                 </div>
 
+
+
                 <Button
                   type="submit"
                   className="w-full"
@@ -144,6 +178,46 @@ export default function ContactSection() {
           </Card>
 
           <div className="space-y-8">
+            <div>
+              <h3 className="font-heading text-xl font-semibold text-foreground mb-4">
+                {t.contact.rateUs || 'Rate Us!'}
+              </h3>
+              <div className="flex flex-col gap-2 mb-8">
+                <div className="flex gap-1">
+                  {[1, 2, 3, 4, 5].map((star) => (
+                    <button
+                      key={star}
+                      type="button"
+                      className={`focus:outline-none transition-transform ${userRating > 0 ? 'cursor-default opacity-80' : 'hover:scale-110'}`}
+                      onMouseEnter={() => !userRating && setHoveredRating(star)}
+                      onMouseLeave={() => !userRating && setHoveredRating(0)}
+                      onClick={() => {
+                        if (userRating === 0) {
+                          setUserRating(star);
+                          submitRating.mutate(star);
+                        }
+                      }}
+                      disabled={submitRating.isPending || userRating > 0}
+                    >
+                      <Star
+                        className={`w-8 h-8 ${
+                          star <= (hoveredRating || userRating)
+                            ? 'fill-yellow-400 text-yellow-400'
+                            : 'text-muted-foreground'
+                        } transition-colors`}
+                      />
+                    </button>
+                  ))}
+                </div>
+                {ratingData && (
+                  <div className="text-sm text-muted-foreground">
+                    <span className="font-bold text-foreground mr-1">{ratingData.average || 0}</span>
+                    {t.contact.averageRating || 'Average Rating'} ({ratingData.count || 0} {t.contact.ratingsCount || 'ratings'})
+                  </div>
+                )}
+              </div>
+            </div>
+
             <div>
               <h3 className="font-heading text-xl font-semibold text-foreground mb-6">
                 {t.contact.companyInfo}

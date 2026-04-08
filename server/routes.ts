@@ -6,7 +6,7 @@ import { createServer, type Server } from "http";
 import { z } from "zod";
 import path from "path";
 import { db } from "./db";
-import { orders, orderItems, ORDER_STATUSES } from "../shared/schema";
+import { orders, orderItems, ORDER_STATUSES, siteRatings } from "../shared/schema";
 import { sql, desc, eq, inArray } from "drizzle-orm";
 import nodemailer from "nodemailer";
 
@@ -14,6 +14,7 @@ const contactSchema = z.object({
   name: z.string().min(1, "Name is required"),
   email: z.string().email("Valid email is required"),
   message: z.string().min(1, "Message is required"),
+  rating: z.number().optional(),
 });
 
 const orderItemSchema = z.object({
@@ -209,6 +210,7 @@ async function sendContactEmail(args: {
   name: string;
   email: string;
   message: string;
+  rating?: number;
 }) {
   const ownerEmail = process.env.ORDER_OWNER_EMAIL;
   const fromEmail = process.env.ORDER_FROM_EMAIL || ownerEmail;
@@ -249,7 +251,7 @@ SENDER DETAILS
 ------------------------------
 Name: ${args.name}
 Email: ${args.email}
-
+${args.rating ? `Rating: ${args.rating} Stars\n` : ''}
 ------------------------------
 MESSAGE
 ------------------------------
@@ -277,6 +279,49 @@ export async function registerRoutes(
   httpServer: Server,
   app: Express,
 ): Promise<Server> {
+  try {
+    await db.execute(sql`
+      CREATE TABLE IF NOT EXISTS site_ratings (
+        id VARCHAR PRIMARY KEY DEFAULT gen_random_uuid(),
+        rating INTEGER NOT NULL,
+        created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+      )
+    `);
+  } catch (e) {
+    console.error("Failed to initialize site_ratings table", e);
+  }
+
+  app.get("/api/ratings", async (req, res) => {
+    try {
+      const allRatings = await db.select().from(siteRatings);
+      if (allRatings.length === 0) {
+        return res.json({ count: 0, average: 0, ratings: [] });
+      }
+      const sum = allRatings.reduce((acc, curr) => acc + curr.rating, 0);
+      const average = sum / allRatings.length;
+      res.json({ count: allRatings.length, average: Number(average.toFixed(1)) });
+    } catch (err) {
+      console.error("Ratings fetch error (DB unavailable):", err);
+      // Fallback response for when DB is paused/offline (e.g. Supabase paused)
+      res.json({ count: 0, average: 0 });
+    }
+  });
+
+  app.post("/api/ratings", async (req, res) => {
+    try {
+      const parsed = z.object({ rating: z.number().min(1).max(5) }).parse(req.body);
+      await db.insert(siteRatings).values({ rating: parsed.rating });
+      res.json({ success: true });
+    } catch (err) {
+      if (err instanceof z.ZodError) {
+        return res.status(400).json({ error: "Invalid rating payload" });
+      }
+      console.error("Ratings post error (DB unavailable):", err);
+      // Fail gracefully if DB is paused so local testing works without crashing
+      res.json({ success: false, error: "Database unavailable" });
+    }
+  });
+
   app.post("/api/contact", async (req, res) => {
     try {
       const data = contactSchema.parse(req.body);
@@ -293,6 +338,7 @@ export async function registerRoutes(
         name: data.name,
         email: data.email,
         message: data.message,
+        rating: data.rating,
       }).catch(err => {
         console.error("Failed to send background contact email:", err);
       });

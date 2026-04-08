@@ -78,3 +78,9 @@ export const orderItems = pgTable("order_items", {
   unitPrice: numeric("unit_price", { precision: 10, scale: 2 }).notNull(),
   totalPrice: numeric("total_price", { precision: 10, scale: 2 }).notNull(),
 });
+
+export const siteRatings = pgTable("site_ratings", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  rating: integer("rating").notNull(),
+  createdAt: timestamp("created_at", { withTimezone: true }).default(sql`now()`),
+});

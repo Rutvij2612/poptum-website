@@ -128,12 +128,16 @@ export const translations = {
       companyInfo: 'Company Information',
       manufactured: 'Manufactured By',
       marketed: 'Marketed & Exported By',
+      rateUs: 'Rate Us!',
+      averageRating: 'Average Rating',
+      ratingsCount: 'ratings',
     },
     footer: {
       tagline: 'Poptum — A Brand by Moforce Exim',
       rights: 'All rights reserved.',
       quickLinks: 'Quick Links',
       followUs: 'Follow Us',
+      developedBy: 'Developed by',
     },
     cart: {
       added: "added to cart",
@@ -218,7 +222,7 @@ export const translations = {
       caption: 'Prime Minister of India promoting Makhana as a healthy snack option',
     },
     products: {
-      title: 'Makhana Byproducts',
+      title: 'Poptum Value-Added Products',
       subtitle: 'Discover the diverse range of Makhana-based products',
       kheer: {
         name: 'Makhana Kheer',
@@ -375,12 +379,16 @@ export const translations = {
       companyInfo: 'Firmeninformationen',
       manufactured: 'Hergestellt Von',
       marketed: 'Vermarktet & Exportiert Von',
+      rateUs: 'Bewerten Sie uns!',
+      averageRating: 'Durchschnittliche Bewertung',
+      ratingsCount: 'Bewertungen',
     },
     footer: {
       tagline: 'Poptum — Eine Marke von Moforce Exim',
       rights: 'Alle Rechte vorbehalten.',
       quickLinks: 'Schnelllinks',
       followUs: 'Folgen Sie Uns',
+      developedBy: 'Entwickelt von',
     },
     cart: {
       added: "zum Warenkorb hinzugefügt",
@@ -465,7 +473,7 @@ export const translations = {
       caption: 'Premierminister von Indien fördert Makhana als gesunde Snack-Option',
     },
     products: {
-      title: 'Makhana Nebenprodukte',
+      title: 'Poptum Mehrwertprodukte',
       subtitle: 'Entdecken Sie die vielfältige Palette von Makhana-basierten Produkten',
       kheer: {
         name: 'Makhana Kheer',
