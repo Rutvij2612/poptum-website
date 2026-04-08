@@ -1,6 +1,7 @@
 import { useLanguage } from '@/lib/language-context';
 import { Card, CardContent } from '@/components/ui/card';
-import { Sparkles, Heart } from 'lucide-react';
+import { Heart } from 'lucide-react';
+import buddhaImage from '@assets/buddha.png';
 
 export default function CulturalSection() {
   const { t } = useLanguage();
@@ -25,13 +26,18 @@ export default function CulturalSection() {
             </p>
           </div>
 
-          <Card className="animate-fade-in-up">
-            <CardContent className="p-8 lg:p-12">
-              <div className="prose prose-lg max-w-none">
-                <div className="flex items-start gap-4 mb-6">
-                  <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0 mt-1">
-                    <Sparkles className="w-6 h-6 text-primary" />
-                  </div>
+          <Card className="overflow-hidden rounded-xl animate-fade-in-up">
+            <CardContent className="p-0">
+              <div className="relative aspect-video overflow-hidden rounded-xl">
+                <img
+                  src={buddhaImage}
+                  alt="Lord Buddha and the legacy of Makhana in Bihar"
+                  className="w-full h-full object-cover rounded-xl"
+                />
+              </div>
+              <div className="p-8 lg:p-12">
+                <div className="prose prose-lg max-w-none">
+                  <div className="mb-6">
                   <div>
                     <h3 className="font-heading text-2xl font-semibold text-foreground mb-4">
                       {t.cultural?.buddhaTitle || 'Lord Buddha & Makhana'}
@@ -62,6 +68,7 @@ export default function CulturalSection() {
                     {t.cultural?.traditionText ||
                       'Makhana has been a part of traditional Indian cuisine for over 2,000 years. It is particularly valued during religious observances, weddings, and festivals, where it symbolizes prosperity and purity. The preparation and consumption of Makhana connect modern consumers to an ancient tradition of mindful eating and cultural reverence.'}
                   </p>
+                  </div>
                 </div>
               </div>
             </CardContent>
