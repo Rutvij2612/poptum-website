@@ -223,11 +223,11 @@ async function sendContactEmail(args: {
   }
 
   const transporter = nodemailer.createTransport({
-    host: process.env.SMTP_HOST,
+    host: process.env.SMTP_HOST?.trim(),
     port: process.env.SMTP_PORT
-      ? parseInt(process.env.SMTP_PORT, 10)
+      ? parseInt(process.env.SMTP_PORT.trim(), 10)
       : undefined,
-    secure: process.env.SMTP_SECURE === "true",
+    secure: (process.env.SMTP_SECURE?.trim() === "true") || (process.env.SMTP_PORT?.trim() === "465"),
     auth:
       process.env.SMTP_USER && process.env.SMTP_PASS
         ? {
@@ -262,13 +262,19 @@ POPTUM WEBSITE CONTACT FORM
 ==============================
 `.trim();
 
-  await transporter.sendMail({
-    from: fromEmail,
-    to: ownerEmail,
-    subject,
-    text: body,
-    replyTo: args.email,
-  });
+  try {
+    const info = await transporter.sendMail({
+      from: fromEmail,
+      to: ownerEmail,
+      subject,
+      text: body,
+      replyTo: args.email,
+    });
+    console.log(`Backend Email secretly sent successfully! MessageID: ${info.messageId}`);
+  } catch (err) {
+    console.error("Critical Transport Error:", err);
+    throw err;
+  }
 }
 
 function generateOrderId() {
