@@ -90,6 +90,7 @@ async function sendOrderEmails(args: {
       ? parseInt(process.env.SMTP_PORT, 10)
       : undefined,
     secure: process.env.SMTP_SECURE === "true",
+    family: 4, // Force IPv4 to avoid IPv6 network unreachable errors on free cloud tiers
     auth:
       process.env.SMTP_USER && process.env.SMTP_PASS
         ? {
@@ -228,6 +229,7 @@ async function sendContactEmail(args: {
       ? parseInt(process.env.SMTP_PORT.trim(), 10)
       : undefined,
     secure: (process.env.SMTP_SECURE?.trim() === "true") || (process.env.SMTP_PORT?.trim() === "465"),
+    family: 4, // Force IPv4 explicitly
     auth:
       process.env.SMTP_USER && process.env.SMTP_PASS
         ? {
