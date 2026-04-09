@@ -8,6 +8,9 @@ interface FlavourCardProps {
   buttonText: string;
   onViewDetails: () => void;
   animationDelay?: number;
+  priceLabel?: string;
+  onAddToCart?: () => void;
+  isInCart?: boolean;
 }
 
 export default function FlavourCard({

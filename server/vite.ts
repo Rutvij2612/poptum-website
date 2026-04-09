@@ -21,7 +21,7 @@ export async function setupVite(server: Server, app: Express) {
   };
 
   const vite = await createViteServer({
-    ...viteConfig,
+    ...(viteConfig as any),
     configFile: false,
       root: "client", // ✅ VERY IMPORTANT
 
