@@ -36,7 +36,7 @@ async function buildAll() {
   await rm("dist", { recursive: true, force: true });
 
   console.log("building client securely inside client folder...");
-  execSync("npm install", { cwd: "client", stdio: "inherit" });
+  execSync("npm install --include=dev", { cwd: "client", stdio: "inherit" });
   execSync("npm run build", { cwd: "client", stdio: "inherit" });
   await cp("client/dist", "dist/public", { recursive: true });
 
