@@ -8,7 +8,7 @@ import path from "path";
 import { db, ensureDatabaseSchema } from "./db";
 import { orders, orderItems, ORDER_STATUSES, siteRatings } from "../shared/schema";
 import { sql, desc, eq, inArray, and } from "drizzle-orm";
-import { sendEmail } from "./utils/email";
+import nodemailer from "nodemailer";
 import Razorpay from "razorpay";
 import crypto from "crypto";
 import { isValidIndianState } from "../shared/indian-states";
@@ -158,7 +158,21 @@ async function sendOrderEmails(args: {
     return;
   }
 
-
+  const transporter = nodemailer.createTransport({
+    host: process.env.SMTP_HOST?.trim(),
+    port: process.env.SMTP_PORT
+      ? parseInt(process.env.SMTP_PORT.trim(), 10)
+      : undefined,
+    secure: (process.env.SMTP_SECURE?.trim() === "true") || (process.env.SMTP_PORT?.trim() === "465"),
+    family: 4, // Force IPv4 to avoid IPv6 network unreachable errors on free cloud tiers
+    auth:
+      process.env.SMTP_USER && process.env.SMTP_PASS
+        ? {
+          user: process.env.SMTP_USER.trim(),
+          pass: process.env.SMTP_PASS.trim(),
+        }
+        : undefined,
+  } as any);
 
   const formatCurrency = (value: number) =>
     indiaGst ? formatIndianRupee(value) : formatCurrencyByCountry(value, customer.country);
@@ -172,30 +186,30 @@ async function sendOrderEmails(args: {
 
   const orderSummaryBlock = indiaGst
     ? formatIndiaAdminOrderSummaryBlock({
-        orderTotals,
-        indiaGst,
-        delivery,
-        paymentMethod: paymentMethod || "Card",
-      })
+      orderTotals,
+      indiaGst,
+      delivery,
+      paymentMethod: paymentMethod || "Card",
+    })
     : [
-        `Subtotal: ${formatCurrency(subtotal)}`,
-        delivery > 0 ? `Delivery: ${formatCurrency(delivery)}` : null,
-        shipping > 0 ? `Shipping: ${formatCurrency(shipping)}` : null,
-        "",
-        `GRAND TOTAL: ${formatCurrency(grandTotal)}`,
-        `Payment Method: ${paymentMethod || "Card"}`,
-      ]
-        .filter((line) => line !== null)
-        .join("\n");
+      `Subtotal: ${formatCurrency(subtotal)}`,
+      delivery > 0 ? `Delivery: ${formatCurrency(delivery)}` : null,
+      shipping > 0 ? `Shipping: ${formatCurrency(shipping)}` : null,
+      "",
+      `GRAND TOTAL: ${formatCurrency(grandTotal)}`,
+      `Payment Method: ${paymentMethod || "Card"}`,
+    ]
+      .filter((line) => line !== null)
+      .join("\n");
 
   const customerPricingBlock = indiaGst
     ? formatIndiaCustomerPricingBlock({
-        orderTotals,
-        indiaGst,
-        delivery,
-        paymentMethod: paymentMethod || (language === "de" ? "Karte" : "Card"),
-        language,
-      })
+      orderTotals,
+      indiaGst,
+      delivery,
+      paymentMethod: paymentMethod || (language === "de" ? "Karte" : "Card"),
+      language,
+    })
     : `Pricing:\nGrand Total: ${formatCurrency(grandTotal)}\n${language === "de" ? "Zahlungsart" : "Payment Method"}: ${paymentMethod || (language === "de" ? "Karte" : "Card")}`;
 
   const timestamp = new Date().toLocaleString();
@@ -205,34 +219,34 @@ async function sendOrderEmails(args: {
 
   const adminShippingLines = indiaOrder
     ? [
-        `Address: ${customer.address}`,
-        `City: ${customer.city}`,
-        `State: ${stateLabel}`,
-        `Postal Code: ${customer.postalCode}`,
-        `Country: ${customer.country}`,
-      ].join("\n")
+      `Address: ${customer.address}`,
+      `City: ${customer.city}`,
+      `State: ${stateLabel}`,
+      `Postal Code: ${customer.postalCode}`,
+      `Country: ${customer.country}`,
+    ].join("\n")
     : [
-        `Address: ${customer.address}`,
-        `City: ${customer.city}`,
-        `Postal Code: ${customer.postalCode}`,
-        `Country: ${customer.country}`,
-      ].join("\n");
+      `Address: ${customer.address}`,
+      `City: ${customer.city}`,
+      `Postal Code: ${customer.postalCode}`,
+      `Country: ${customer.country}`,
+    ].join("\n");
 
   const customerDeliveryLines = indiaOrder
     ? [
-        customer.fullName,
-        customer.address,
-        customer.city,
-        stateLabel,
-        customer.postalCode,
-        customer.country,
-      ].join("\n")
+      customer.fullName,
+      customer.address,
+      customer.city,
+      stateLabel,
+      customer.postalCode,
+      customer.country,
+    ].join("\n")
     : [
-        customer.fullName,
-        customer.address,
-        `${customer.postalCode} ${customer.city}`,
-        customer.country,
-      ].join("\n");
+      customer.fullName,
+      customer.address,
+      `${customer.postalCode} ${customer.city}`,
+      customer.country,
+    ].join("\n");
 
   const ownerSubject =
     language === "de"
@@ -300,15 +314,15 @@ ${customerDeliveryLines}
 
   const attachments = invoicePdf
     ? [
-        {
-          filename: `Invoice_${orderId}.pdf`,
-          content: invoicePdf,
-        },
-      ]
+      {
+        filename: `Invoice_${orderId}.pdf`,
+        content: invoicePdf,
+      },
+    ]
     : [];
 
   const tAdminEmailStart = performance.now();
-  await sendEmail({
+  await transporter.sendMail({
     from: fromEmail,
     to: ownerEmail,
     subject: ownerSubject,
@@ -318,7 +332,7 @@ ${customerDeliveryLines}
   console.log(`[ORDER_FULFILLMENT] Admin email sending duration: ${(performance.now() - tAdminEmailStart).toFixed(2)}ms`);
 
   const tCustomerEmailStart = performance.now();
-  await sendEmail({
+  await transporter.sendMail({
     from: fromEmail,
     to: customer.email,
     subject: customerSubject,
@@ -403,7 +417,23 @@ async function sendGermanyManualOrderAdminNotification(args: {
     return;
   }
 
-
+  const transporter = nodemailer.createTransport({
+    host: process.env.SMTP_HOST?.trim(),
+    port: process.env.SMTP_PORT
+      ? parseInt(process.env.SMTP_PORT.trim(), 10)
+      : undefined,
+    secure:
+      process.env.SMTP_SECURE?.trim() === "true" ||
+      process.env.SMTP_PORT?.trim() === "465",
+    family: 4,
+    auth:
+      process.env.SMTP_USER && process.env.SMTP_PASS
+        ? {
+          user: process.env.SMTP_USER.trim(),
+          pass: process.env.SMTP_PASS.trim(),
+        }
+        : undefined,
+  } as any);
 
   const itemsLines = buildGermanyEmailProductLines(args.items);
   const pricingSummary = buildGermanyEmailPricingSummary(args.items, args.totals);
@@ -455,7 +485,7 @@ POPTUM — GERMANY MANUAL CHECKOUT
 ==============================
 `;
 
-  await sendEmail({
+  await transporter.sendMail({
     from: fromEmail,
     to: GERMANY_MANUAL_ORDER_ADMIN_EMAIL,
     subject,
@@ -492,7 +522,23 @@ async function sendGermanyManualOrderCustomerConfirmation(args: {
     return;
   }
 
-
+  const transporter = nodemailer.createTransport({
+    host: process.env.SMTP_HOST?.trim(),
+    port: process.env.SMTP_PORT
+      ? parseInt(process.env.SMTP_PORT.trim(), 10)
+      : undefined,
+    secure:
+      process.env.SMTP_SECURE?.trim() === "true" ||
+      process.env.SMTP_PORT?.trim() === "465",
+    family: 4,
+    auth:
+      process.env.SMTP_USER && process.env.SMTP_PASS
+        ? {
+          user: process.env.SMTP_USER.trim(),
+          pass: process.env.SMTP_PASS.trim(),
+        }
+        : undefined,
+  } as any);
 
   const itemsLines = buildGermanyEmailProductLines(args.items);
   const pricingSummary = buildGermanyEmailPricingSummary(args.items, args.totals);
@@ -529,7 +575,7 @@ Regards,
 Team Poptum
 `;
 
-  await sendEmail({
+  await transporter.sendMail({
     from: fromEmail,
     to: args.customer.email,
     subject,
@@ -556,7 +602,21 @@ async function sendContactEmail(args: {
     return;
   }
 
-
+  const transporter = nodemailer.createTransport({
+    host: process.env.SMTP_HOST?.trim(),
+    port: process.env.SMTP_PORT
+      ? parseInt(process.env.SMTP_PORT.trim(), 10)
+      : undefined,
+    secure: (process.env.SMTP_SECURE?.trim() === "true") || (process.env.SMTP_PORT?.trim() === "465"),
+    family: 4, // Force IPv4 explicitly
+    auth:
+      process.env.SMTP_USER && process.env.SMTP_PASS
+        ? {
+          user: process.env.SMTP_USER,
+          pass: process.env.SMTP_PASS,
+        }
+        : undefined,
+  } as any);
 
   const timestamp = new Date().toLocaleString();
   const subject = `New Contact Message - ${args.name}`;
@@ -584,14 +644,14 @@ POPTUM WEBSITE CONTACT FORM
 `.trim();
 
   try {
-    const result = await sendEmail({
+    const info = await transporter.sendMail({
       from: fromEmail,
       to: ownerEmail,
       subject,
       text: body,
       replyTo: args.email,
     });
-    console.log(`Backend Email secretly sent successfully! MessageID: ${result?.id}`);
+    console.log(`Backend Email secretly sent successfully! MessageID: ${info.messageId}`);
   } catch (err) {
     console.error("Critical Transport Error:", err);
     throw err;
@@ -926,10 +986,10 @@ export async function registerRoutes(
       if (!authHeader || !authHeader.startsWith("Bearer ")) {
         return res.status(401).json({ success: false, message: "Unauthorized" });
       }
-      
+
       const token = authHeader.split(" ")[1];
       const payload = verifyToken(token) as { id: string; role: string };
-      
+
       const [user] = await db.select().from(users).where(eq(users.id, payload.id));
       if (!user) {
         return res.status(404).json({ success: false, message: "User not found" });
@@ -956,20 +1016,20 @@ export async function registerRoutes(
       if (!authHeader || !authHeader.startsWith("Bearer ")) {
         return res.status(401).json({ success: false, message: "Unauthorized" });
       }
-      
+
       const token = authHeader.split(" ")[1];
       const payload = verifyToken(token) as { id: string; role: string };
-      
+
       const { country } = req.body;
       if (country !== "India" && country !== "Germany") {
         return res.status(400).json({ success: false, message: "Country must be India or Germany" });
       }
-      
+
       await db
         .update(users)
         .set({ country })
         .where(eq(users.id, payload.id));
-        
+
       res.json({ success: true, country });
     } catch (error) {
       console.error("Update country error:", error);
@@ -977,7 +1037,22 @@ export async function registerRoutes(
     }
   });
 
-
+  const createSmtpTransporter = () =>
+    nodemailer.createTransport({
+      host: process.env.SMTP_HOST?.trim(),
+      port: process.env.SMTP_PORT ? parseInt(process.env.SMTP_PORT.trim(), 10) : undefined,
+      secure:
+        (process.env.SMTP_SECURE?.trim() === "true") ||
+        (process.env.SMTP_PORT?.trim() === "465"),
+      family: 4, // Force IPv4 to avoid IPv6 issues on some cloud tiers
+      auth:
+        process.env.SMTP_USER && process.env.SMTP_PASS
+          ? {
+            user: process.env.SMTP_USER.trim(),
+            pass: process.env.SMTP_PASS.trim(),
+          }
+          : undefined,
+    } as any);
 
   const sendPasswordResetEmail = async (args: {
     email: string;
@@ -992,13 +1067,15 @@ export async function registerRoutes(
       return;
     }
 
+    const transporter = createSmtpTransporter();
+
     const subject = args.language === "de" ? "Passwort zurücksetzen" : "Reset your password";
     const body =
       args.language === "de"
         ? `Wir haben eine Anfrage zum Zurücksetzen Ihres Passworts erhalten.\n\nBitte klicken Sie auf den folgenden Link, um Ihr Passwort zurückzusetzen:\n${args.resetLink}\n\nWenn Sie diese Anfrage nicht gestellt haben, ignorieren Sie diese E-Mail.`
         : `We received a request to reset your password.\n\nPlease click the link below to reset your password:\n${args.resetLink}\n\nIf you didn't request this, you can ignore this email.`;
 
-    await sendEmail({
+    await transporter.sendMail({
       from: fromEmail,
       to: args.email,
       subject,
@@ -1588,7 +1665,7 @@ export async function registerRoutes(
       if (!razorpay) {
         return res.status(500).json({ success: false, message: "Razorpay not configured on server" });
       }
-      
+
       const { amount, currency, receipt } = req.body;
       if (!amount || amount < 100) {
         return res.status(400).json({ success: false, message: "Invalid amount. Must be >= 100 paise" });
@@ -1622,7 +1699,7 @@ export async function registerRoutes(
     try {
       const id = req.params.id;
       const { razorpay_payment_id, razorpay_order_id, razorpay_signature } = req.body || {};
-      
+
       const [order] = await db.select().from(orders).where(eq(orders.id, id));
       if (!order) return res.status(404).json({ message: "Order not found" });
 
@@ -1636,9 +1713,9 @@ export async function registerRoutes(
       // Enforce Razorpay payment details and signature check for India users
       if (order.country === "India") {
         if (!razorpay_payment_id || !razorpay_order_id || !razorpay_signature) {
-          return res.status(400).json({ 
-            success: false, 
-            message: "Razorpay payment details are required for payments in India." 
+          return res.status(400).json({
+            success: false,
+            message: "Razorpay payment details are required for payments in India."
           });
         }
       }
@@ -1649,13 +1726,13 @@ export async function registerRoutes(
         if (!process.env.RAZORPAY_KEY_SECRET) {
           return res.status(500).json({ success: false, message: "Server not configured for Razorpay" });
         }
-        
+
         const body = razorpay_order_id + "|" + razorpay_payment_id;
         const expectedSignature = crypto
           .createHmac("sha256", process.env.RAZORPAY_KEY_SECRET)
           .update(body.toString())
           .digest("hex");
-          
+
         if (expectedSignature !== razorpay_signature) {
           console.log(`[PAYMENT_VERIFY] Signature verification failed`);
           return res.status(400).json({ success: false, message: "Invalid payment signature" });
@@ -1712,8 +1789,8 @@ export async function registerRoutes(
 
         const [uOrder] = await tx
           .update(orders)
-          .set({ 
-            paymentStatus: "paid", 
+          .set({
+            paymentStatus: "paid",
             transactionId: razorpay_payment_id || lockedOrder.transactionId,
             razorpayOrderId: razorpay_order_id || lockedOrder.razorpayOrderId,
             paymentMethod: actualPaymentMethod
@@ -1806,7 +1883,7 @@ export async function registerRoutes(
         const orderId = matchingOrder.id;
         const paymentEntity = event.payload.payment?.entity;
         const transactionId = paymentEntity?.id || matchingOrder.transactionId;
-        
+
         let actualPaymentMethod = matchingOrder.paymentMethod || "Card";
         if (paymentEntity && paymentEntity.method) {
           const methodLower = String(paymentEntity.method).toLowerCase();
@@ -1861,7 +1938,7 @@ export async function registerRoutes(
         if (shouldFulfill && updatedOrder) {
           const items = await db.select().from(orderItems).where(eq(orderItems.orderId, orderId));
           console.log(`[WEBHOOK] Successfully marked order ${updatedOrder.orderId} as paid via webhook.`);
-          
+
           setImmediate(() => {
             fulfillPaidOrder(updatedOrder, items, actualPaymentMethod).catch((err) => {
               console.error("[WEBHOOK] Background fulfillment failed:", err);
