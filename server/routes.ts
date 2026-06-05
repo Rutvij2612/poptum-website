@@ -8,8 +8,8 @@ import path from "path";
 import { db, ensureDatabaseSchema } from "./db";
 import { orders, orderItems, ORDER_STATUSES, siteRatings } from "../shared/schema";
 import { sql, desc, eq, inArray, and } from "drizzle-orm";
-import nodemailer from "nodemailer";
 import Razorpay from "razorpay";
+import { logMailTransportMode, sendAppMail } from "./mail";
 import crypto from "crypto";
 import { isValidIndianState } from "../shared/indian-states";
 import {
@@ -26,29 +26,6 @@ import {
 } from "./gst";
 
 const EUR_TO_INR = 1;
-const SMTP_TIMEOUT_MS = 10000;
-
-function createSmtpTransporter() {
-  return nodemailer.createTransport({
-    host: process.env.SMTP_HOST?.trim(),
-    port: process.env.SMTP_PORT
-      ? parseInt(process.env.SMTP_PORT.trim(), 10)
-      : undefined,
-    secure:
-      process.env.SMTP_SECURE?.trim() === "true" ||
-      process.env.SMTP_PORT?.trim() === "465",
-    family: 4,
-    connectionTimeout: SMTP_TIMEOUT_MS,
-    socketTimeout: SMTP_TIMEOUT_MS,
-    auth:
-      process.env.SMTP_USER && process.env.SMTP_PASS
-        ? {
-            user: process.env.SMTP_USER.trim(),
-            pass: process.env.SMTP_PASS.trim(),
-          }
-        : undefined,
-  } as any);
-}
 
 function normalizeCountry(country?: string | null) {
   return country === "India" ? "India" : "Germany";
@@ -180,8 +157,6 @@ async function sendOrderEmails(args: {
     );
     return;
   }
-
-  const transporter = createSmtpTransporter();
 
   const formatCurrency = (value: number) =>
     indiaGst ? formatIndianRupee(value) : formatCurrencyByCountry(value, customer.country);
@@ -331,7 +306,7 @@ ${customerDeliveryLines}
     : [];
 
   const tAdminEmailStart = performance.now();
-  await transporter.sendMail({
+  await sendAppMail({
     from: fromEmail,
     to: ownerEmail,
     subject: ownerSubject,
@@ -341,7 +316,7 @@ ${customerDeliveryLines}
   console.log(`[ORDER_FULFILLMENT] Admin email sending duration: ${(performance.now() - tAdminEmailStart).toFixed(2)}ms`);
 
   const tCustomerEmailStart = performance.now();
-  await transporter.sendMail({
+  await sendAppMail({
     from: fromEmail,
     to: customer.email,
     subject: customerSubject,
@@ -426,8 +401,6 @@ async function sendGermanyManualOrderAdminNotification(args: {
     return;
   }
 
-  const transporter = createSmtpTransporter();
-
   const itemsLines = buildGermanyEmailProductLines(args.items);
   const pricingSummary = buildGermanyEmailPricingSummary(args.items, args.totals);
   const orderDateLabel = args.orderDate.toLocaleString("en-GB", {
@@ -478,7 +451,7 @@ POPTUM — GERMANY MANUAL CHECKOUT
 ==============================
 `;
 
-  await transporter.sendMail({
+  await sendAppMail({
     from: fromEmail,
     to: GERMANY_MANUAL_ORDER_ADMIN_EMAIL,
     subject,
@@ -515,8 +488,6 @@ async function sendGermanyManualOrderCustomerConfirmation(args: {
     return;
   }
 
-  const transporter = createSmtpTransporter();
-
   const itemsLines = buildGermanyEmailProductLines(args.items);
   const pricingSummary = buildGermanyEmailPricingSummary(args.items, args.totals);
 
@@ -552,7 +523,7 @@ Regards,
 Team Poptum
 `;
 
-  await transporter.sendMail({
+  await sendAppMail({
     from: fromEmail,
     to: args.customer.email,
     subject,
@@ -579,8 +550,6 @@ async function sendContactEmail(args: {
     return;
   }
 
-  const transporter = createSmtpTransporter();
-
   const timestamp = new Date().toLocaleString();
   const subject = `New Contact Message - ${args.name}`;
   const body = `
@@ -606,14 +575,13 @@ POPTUM WEBSITE CONTACT FORM
 ==============================
 `.trim();
 
-  transporter
-    .sendMail({
-      from: fromEmail,
-      to: ownerEmail,
-      subject,
-      text: body,
-      replyTo: args.email,
-    })
+  sendAppMail({
+    from: fromEmail,
+    to: ownerEmail,
+    subject,
+    text: body,
+    replyTo: args.email,
+  })
     .then((info) => {
       console.log(`Backend Email secretly sent successfully! MessageID: ${info.messageId}`);
     })
@@ -757,6 +725,7 @@ export async function registerRoutes(
   app: Express,
 ): Promise<Server> {
   await ensureDatabaseSchema();
+  logMailTransportMode();
 
   cleanupExpiredOrders().catch((err) => {
     console.error("Failed to run expired orders cleanup on startup", err);
@@ -1014,15 +983,13 @@ export async function registerRoutes(
       return;
     }
 
-    const transporter = createSmtpTransporter();
-
     const subject = args.language === "de" ? "Passwort zurücksetzen" : "Reset your password";
     const body =
       args.language === "de"
         ? `Wir haben eine Anfrage zum Zurücksetzen Ihres Passworts erhalten.\n\nBitte klicken Sie auf den folgenden Link, um Ihr Passwort zurückzusetzen:\n${args.resetLink}\n\nWenn Sie diese Anfrage nicht gestellt haben, ignorieren Sie diese E-Mail.`
         : `We received a request to reset your password.\n\nPlease click the link below to reset your password:\n${args.resetLink}\n\nIf you didn't request this, you can ignore this email.`;
 
-    transporter.sendMail({
+    sendAppMail({
       from: fromEmail,
       to: args.email,
       subject,

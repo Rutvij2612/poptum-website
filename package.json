@@ -8,7 +8,8 @@
     "build": "tsx script/build.ts",
     "start": "node dist/index.cjs",
     "check": "tsc",
-    "db:push": "drizzle-kit push"
+    "db:push": "drizzle-kit push",
+    "gmail:oauth-setup": "tsx script/gmail-oauth-setup.ts"
   },
   "dependencies": {
     "@fontsource/noto-sans": "^5.2.10",
@@ -58,6 +59,7 @@
     "express": "^4.21.2",
     "express-session": "^1.18.1",
     "framer-motion": "^11.13.1",
+    "googleapis": "^173.0.0",
     "input-otp": "^1.4.2",
     "jsonwebtoken": "^9.0.3",
     "lucide-react": "^0.453.0",
