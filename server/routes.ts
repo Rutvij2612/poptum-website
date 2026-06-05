@@ -8,7 +8,7 @@ import path from "path";
 import { db, ensureDatabaseSchema } from "./db";
 import { orders, orderItems, ORDER_STATUSES, siteRatings } from "../shared/schema";
 import { sql, desc, eq, inArray, and } from "drizzle-orm";
-import nodemailer from "nodemailer";
+import { sendEmail } from "./utils/email";
 import Razorpay from "razorpay";
 import crypto from "crypto";
 import { isValidIndianState } from "../shared/indian-states";
@@ -158,21 +158,7 @@ async function sendOrderEmails(args: {
     return;
   }
 
-  const transporter = nodemailer.createTransport({
-    host: process.env.SMTP_HOST?.trim(),
-    port: process.env.SMTP_PORT
-      ? parseInt(process.env.SMTP_PORT.trim(), 10)
-      : undefined,
-    secure: (process.env.SMTP_SECURE?.trim() === "true") || (process.env.SMTP_PORT?.trim() === "465"),
-    family: 4, // Force IPv4 to avoid IPv6 network unreachable errors on free cloud tiers
-    auth:
-      process.env.SMTP_USER && process.env.SMTP_PASS
-        ? {
-          user: process.env.SMTP_USER.trim(),
-          pass: process.env.SMTP_PASS.trim(),
-        }
-        : undefined,
-  } as any);
+
 
   const formatCurrency = (value: number) =>
     indiaGst ? formatIndianRupee(value) : formatCurrencyByCountry(value, customer.country);
@@ -322,7 +308,7 @@ ${customerDeliveryLines}
     : [];
 
   const tAdminEmailStart = performance.now();
-  await transporter.sendMail({
+  await sendEmail({
     from: fromEmail,
     to: ownerEmail,
     subject: ownerSubject,
@@ -332,7 +318,7 @@ ${customerDeliveryLines}
   console.log(`[ORDER_FULFILLMENT] Admin email sending duration: ${(performance.now() - tAdminEmailStart).toFixed(2)}ms`);
 
   const tCustomerEmailStart = performance.now();
-  await transporter.sendMail({
+  await sendEmail({
     from: fromEmail,
     to: customer.email,
     subject: customerSubject,
@@ -417,23 +403,7 @@ async function sendGermanyManualOrderAdminNotification(args: {
     return;
   }
 
-  const transporter = nodemailer.createTransport({
-    host: process.env.SMTP_HOST?.trim(),
-    port: process.env.SMTP_PORT
-      ? parseInt(process.env.SMTP_PORT.trim(), 10)
-      : undefined,
-    secure:
-      process.env.SMTP_SECURE?.trim() === "true" ||
-      process.env.SMTP_PORT?.trim() === "465",
-    family: 4,
-    auth:
-      process.env.SMTP_USER && process.env.SMTP_PASS
-        ? {
-            user: process.env.SMTP_USER.trim(),
-            pass: process.env.SMTP_PASS.trim(),
-          }
-        : undefined,
-  } as any);
+
 
   const itemsLines = buildGermanyEmailProductLines(args.items);
   const pricingSummary = buildGermanyEmailPricingSummary(args.items, args.totals);
@@ -485,7 +455,7 @@ POPTUM — GERMANY MANUAL CHECKOUT
 ==============================
 `;
 
-  await transporter.sendMail({
+  await sendEmail({
     from: fromEmail,
     to: GERMANY_MANUAL_ORDER_ADMIN_EMAIL,
     subject,
@@ -522,23 +492,7 @@ async function sendGermanyManualOrderCustomerConfirmation(args: {
     return;
   }
 
-  const transporter = nodemailer.createTransport({
-    host: process.env.SMTP_HOST?.trim(),
-    port: process.env.SMTP_PORT
-      ? parseInt(process.env.SMTP_PORT.trim(), 10)
-      : undefined,
-    secure:
-      process.env.SMTP_SECURE?.trim() === "true" ||
-      process.env.SMTP_PORT?.trim() === "465",
-    family: 4,
-    auth:
-      process.env.SMTP_USER && process.env.SMTP_PASS
-        ? {
-            user: process.env.SMTP_USER.trim(),
-            pass: process.env.SMTP_PASS.trim(),
-          }
-        : undefined,
-  } as any);
+
 
   const itemsLines = buildGermanyEmailProductLines(args.items);
   const pricingSummary = buildGermanyEmailPricingSummary(args.items, args.totals);
@@ -575,7 +529,7 @@ Regards,
 Team Poptum
 `;
 
-  await transporter.sendMail({
+  await sendEmail({
     from: fromEmail,
     to: args.customer.email,
     subject,
@@ -602,21 +556,7 @@ async function sendContactEmail(args: {
     return;
   }
 
-  const transporter = nodemailer.createTransport({
-    host: process.env.SMTP_HOST?.trim(),
-    port: process.env.SMTP_PORT
-      ? parseInt(process.env.SMTP_PORT.trim(), 10)
-      : undefined,
-    secure: (process.env.SMTP_SECURE?.trim() === "true") || (process.env.SMTP_PORT?.trim() === "465"),
-    family: 4, // Force IPv4 explicitly
-    auth:
-      process.env.SMTP_USER && process.env.SMTP_PASS
-        ? {
-          user: process.env.SMTP_USER,
-          pass: process.env.SMTP_PASS,
-        }
-        : undefined,
-  } as any);
+
 
   const timestamp = new Date().toLocaleString();
   const subject = `New Contact Message - ${args.name}`;
@@ -644,14 +584,14 @@ POPTUM WEBSITE CONTACT FORM
 `.trim();
 
   try {
-    const info = await transporter.sendMail({
+    const result = await sendEmail({
       from: fromEmail,
       to: ownerEmail,
       subject,
       text: body,
       replyTo: args.email,
     });
-    console.log(`Backend Email secretly sent successfully! MessageID: ${info.messageId}`);
+    console.log(`Backend Email secretly sent successfully! MessageID: ${result?.id}`);
   } catch (err) {
     console.error("Critical Transport Error:", err);
     throw err;
@@ -1037,22 +977,7 @@ export async function registerRoutes(
     }
   });
 
-  const createSmtpTransporter = () =>
-    nodemailer.createTransport({
-      host: process.env.SMTP_HOST?.trim(),
-      port: process.env.SMTP_PORT ? parseInt(process.env.SMTP_PORT.trim(), 10) : undefined,
-      secure:
-        (process.env.SMTP_SECURE?.trim() === "true") ||
-        (process.env.SMTP_PORT?.trim() === "465"),
-      family: 4, // Force IPv4 to avoid IPv6 issues on some cloud tiers
-      auth:
-        process.env.SMTP_USER && process.env.SMTP_PASS
-          ? {
-              user: process.env.SMTP_USER.trim(),
-              pass: process.env.SMTP_PASS.trim(),
-            }
-          : undefined,
-    } as any);
+
 
   const sendPasswordResetEmail = async (args: {
     email: string;
@@ -1067,15 +992,13 @@ export async function registerRoutes(
       return;
     }
 
-    const transporter = createSmtpTransporter();
-
     const subject = args.language === "de" ? "Passwort zurücksetzen" : "Reset your password";
     const body =
       args.language === "de"
         ? `Wir haben eine Anfrage zum Zurücksetzen Ihres Passworts erhalten.\n\nBitte klicken Sie auf den folgenden Link, um Ihr Passwort zurückzusetzen:\n${args.resetLink}\n\nWenn Sie diese Anfrage nicht gestellt haben, ignorieren Sie diese E-Mail.`
         : `We received a request to reset your password.\n\nPlease click the link below to reset your password:\n${args.resetLink}\n\nIf you didn't request this, you can ignore this email.`;
 
-    await transporter.sendMail({
+    await sendEmail({
       from: fromEmail,
       to: args.email,
       subject,
