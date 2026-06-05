@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import Navbar from "@/components/Navbar";
-const API = import.meta.env.VITE_API_URL;
+import { useLanguage } from "@/lib/language-context";
+import { formatPriceByCountry } from "@/lib/pricing";
+const API = import.meta.env.VITE_API_URL || "";
 
 const ORDER_STATUSES = ["Ordered", "Processing", "Shipped", "Delivered", "Cancelled"] as const;
 type OrderStatus = (typeof ORDER_STATUSES)[number];
@@ -33,9 +35,12 @@ interface Order {
   quantity: number;
   total_price: string;
   status: string;
+  payment_status: string;
   created_at: string;
   issue_note: string | null;
   items: OrderItem[];
+  country?: string;
+  state?: string | null;
 }
 
 function StatusBadge({ status }: { status: string }) {
@@ -56,6 +61,7 @@ function fetchOrders(): Promise<Order[]> {
 }
 
 export default function AdminDashboard() {
+  const { t } = useLanguage();
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
   const [addOpen, setAddOpen] = useState(false);
@@ -127,36 +133,38 @@ export default function AdminDashboard() {
 
       <main className="px-6 py-8 pt-28 max-w-450 mx-auto">
         <div className="flex items-center justify-between mb-6">
-          <h1 className="text-2xl font-bold">Admin Dashboard</h1>
+          <h1 className="text-2xl font-bold">{t.admin.dashboard}</h1>
           <button
             type="button"
             onClick={() => setAddOpen(true)}
             className="rounded-md bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700"
           >
-            Add Order
+            {t.admin.addOrder}
           </button>
         </div>
 
-        <h2 className="text-lg font-semibold mb-4">Orders</h2>
+        <h2 className="text-lg font-semibold mb-4">{t.admin.orders}</h2>
 
         {loading ? (
-          <p className="text-gray-500">Loading orders...</p>
+          <p className="text-gray-500">{t.admin.loadingOrders}</p>
         ) : (
           <div className="overflow-x-auto rounded-lg border border-gray-200">
             <table className="min-w-full divide-y divide-gray-200">
               <thead className="bg-gray-50">
                 <tr>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-700 uppercase">Order ID</th>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-700 uppercase">Customer Name</th>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-700 uppercase">Email</th>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-700 uppercase">Phone</th>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-700 uppercase">Address</th>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-700 uppercase">Product Ordered</th>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-700 uppercase">Quantity</th>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-700 uppercase">Total Price</th>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-700 uppercase">Order Status</th>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-700 uppercase">Created At</th>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-700 uppercase">Actions</th>
+                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-700 uppercase">{t.admin.table.orderId}</th>
+                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-700 uppercase">{t.admin.table.customerName}</th>
+                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-700 uppercase">{t.admin.table.email}</th>
+                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-700 uppercase">{t.admin.table.phone}</th>
+                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-700 uppercase">{t.admin.table.address}</th>
+                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-700 uppercase">State</th>
+                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-700 uppercase">{t.admin.table.productOrdered}</th>
+                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-700 uppercase">{t.admin.table.quantity}</th>
+                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-700 uppercase">{t.admin.table.totalPrice}</th>
+                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-700 uppercase">Payment</th>
+                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-700 uppercase">{t.admin.table.status}</th>
+                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-700 uppercase">{t.admin.table.createdAt}</th>
+                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-700 uppercase">{t.admin.table.actions}</th>
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
@@ -167,9 +175,19 @@ export default function AdminDashboard() {
                     <td className="px-4 py-3 text-sm text-gray-600">{order.email ?? "—"}</td>
                     <td className="px-4 py-3 text-sm text-gray-600">{order.phone ?? "—"}</td>
                     <td className="px-4 py-3 text-sm text-gray-600 max-w-45 truncate" title={order.address || undefined}>{order.address || "—"}</td>
+                    <td className="px-4 py-3 text-sm text-gray-600">{order.state?.trim() ? order.state : "—"}</td>
                     <td className="px-4 py-3 text-sm text-gray-600 max-w-40 truncate" title={(order.product_ordered || order.product) || undefined}>{(order.product_ordered || order.product) ?? "—"}</td>
                     <td className="px-4 py-3 text-sm text-gray-900">{order.quantity ?? "—"}</td>
-                    <td className="px-4 py-3 text-sm text-gray-900">€{order.total_price ?? "0"}</td>
+                    <td className="px-4 py-3 text-sm text-gray-900">{formatPriceByCountry(Number(order.total_price ?? 0), order.country)}</td>
+                    <td className="px-4 py-3 text-sm">
+                      <span className={`inline-flex items-center rounded-full border px-2 py-0.5 text-xs font-medium ${
+                        order.payment_status === "paid" ? "bg-green-100 text-green-800" : 
+                        order.payment_status === "failed" ? "bg-red-100 text-red-800" : 
+                        "bg-yellow-100 text-yellow-800"
+                      }`}>
+                        {order.payment_status?.toUpperCase() ?? "PENDING"}
+                      </span>
+                    </td>
                     <td className="px-4 py-3">
                       <div className="flex items-center gap-2">
                         <StatusBadge status={order.status ?? "Ordered"} />
@@ -195,21 +213,21 @@ export default function AdminDashboard() {
                           onClick={() => handleEdit(order)}
                           className="text-indigo-600 hover:text-indigo-800 text-sm font-medium cursor-pointer"
                         >
-                          Edit
+                          {t.admin.actions.edit}
                         </button>
                         <button
                           type="button"
                           onClick={() => handleDeleteClick(order)}
                           className="text-red-600 hover:text-red-800 text-sm font-medium cursor-pointer"
                         >
-                          Delete
+                          {t.admin.actions.delete}
                         </button>
                         <button
                           type="button"
                           onClick={() => handleViewIssue(order)}
                           className="text-gray-600 hover:text-gray-800 text-sm font-medium cursor-pointer"
                         >
-                          View Issue
+                          {t.admin.actions.viewIssue}
                         </button>
                       </div>
                     </td>
@@ -221,7 +239,7 @@ export default function AdminDashboard() {
         )}
 
         {orders.length === 0 && !loading && (
-          <p className="text-gray-500 mt-4">No orders yet.</p>
+          <p className="text-gray-500 mt-4">{t.admin.noOrders}</p>
         )}
       </main>
 
@@ -252,7 +270,7 @@ export default function AdminDashboard() {
       {deleteOrder && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50" onClick={() => setDeleteOrder(null)}>
           <div className="bg-white rounded-lg shadow-xl p-6 max-w-md w-full mx-4" onClick={(e) => e.stopPropagation()}>
-            <p className="text-gray-700 mb-4">Are you sure you want to delete this order?</p>
+            <p className="text-gray-700 mb-4">{t.admin.modals.deleteConfirm}</p>
             <p className="text-sm text-gray-500 mb-6">Order ID: {deleteOrder.order_id}</p>
             <div className="flex justify-end gap-2">
               <button
@@ -260,14 +278,14 @@ export default function AdminDashboard() {
                 onClick={() => setDeleteOrder(null)}
                 className="rounded-md border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50"
               >
-                Cancel
+                {t.admin.modals.cancel}
               </button>
               <button
                 type="button"
                 onClick={handleDeleteConfirm}
                 className="rounded-md bg-red-600 px-4 py-2 text-sm font-medium text-white hover:bg-red-700"
               >
-                Delete
+                {t.admin.actions.delete}
               </button>
             </div>
           </div>
@@ -278,10 +296,10 @@ export default function AdminDashboard() {
       {issueOrder && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50" onClick={() => setIssueOrder(null)}>
           <div className="bg-white rounded-lg shadow-xl p-6 max-w-lg w-full mx-4" onClick={(e) => e.stopPropagation()}>
-            <h3 className="text-lg font-semibold mb-2">Customer Issue / Complaint</h3>
+            <h3 className="text-lg font-semibold mb-2">{t.admin.modals.issueTitle}</h3>
             <p className="text-sm text-gray-500 mb-2">Order ID: {issueOrder.order_id}</p>
             <div className="rounded border border-gray-200 bg-gray-50 p-4 min-h-20 text-gray-700">
-              {issueOrder.issue_note || "No issue or complaint recorded for this order."}
+              {issueOrder.issue_note || t.admin.modals.noIssue}
             </div>
             <div className="mt-4 flex justify-end">
               <button
@@ -289,7 +307,7 @@ export default function AdminDashboard() {
                 onClick={() => setIssueOrder(null)}
                 className="rounded-md bg-gray-800 px-4 py-2 text-sm font-medium text-white hover:bg-gray-700"
               >
-                Close
+                {t.admin.modals.close}
               </button>
             </div>
           </div>
@@ -316,6 +334,7 @@ function AddOrderModal({
   const [status, setStatus] = useState<OrderStatus>("Ordered");
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
+  const { t } = useLanguage();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -350,10 +369,10 @@ function AddOrderModal({
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50" onClick={onClose}>
       <div className="bg-white rounded-lg shadow-xl p-6 max-w-md w-full mx-4 max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
-        <h3 className="text-lg font-semibold mb-4">Add Order</h3>
+        <h3 className="text-lg font-semibold mb-4">{t.admin.modals.addTitle}</h3>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Customer Name</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">{t.admin.table.customerName}</label>
             <input
               type="text"
               value={fullName}
@@ -363,7 +382,7 @@ function AddOrderModal({
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">{t.admin.table.email}</label>
             <input
               type="email"
               value={email}
@@ -373,7 +392,7 @@ function AddOrderModal({
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Phone</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">{t.admin.table.phone}</label>
             <input
               type="text"
               value={phone}
@@ -383,7 +402,7 @@ function AddOrderModal({
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Address</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">{t.admin.table.address}</label>
             <input
               type="text"
               value={address}
@@ -393,7 +412,7 @@ function AddOrderModal({
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Product</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">{t.admin.table.productOrdered}</label>
             <input
               type="text"
               value={product}
@@ -403,7 +422,7 @@ function AddOrderModal({
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Quantity</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">{t.admin.table.quantity}</label>
             <input
               type="number"
               min={1}
@@ -413,7 +432,7 @@ function AddOrderModal({
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Price (€)</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">{t.admin.table.totalPrice} (€)</label>
             <input
               type="number"
               min={0}
@@ -425,7 +444,7 @@ function AddOrderModal({
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Status</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">{t.admin.table.status}</label>
             <select
               value={status}
               onChange={(e) => setStatus(e.target.value as OrderStatus)}
@@ -439,14 +458,14 @@ function AddOrderModal({
           {error && <p className="text-sm text-red-600">{error}</p>}
           <div className="flex justify-end gap-2 pt-2">
             <button type="button" onClick={onClose} className="rounded-md border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50">
-              Cancel
+              {t.admin.modals.cancel}
             </button>
             <button
               type="submit"
               disabled={submitting}
               className="rounded-md bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700 disabled:opacity-50"
             >
-              {submitting ? "Creating..." : "Create Order"}
+              {submitting ? "..." : t.admin.addOrder}
             </button>
           </div>
         </form>
@@ -472,6 +491,7 @@ function EditOrderModal({
   const [status, setStatus] = useState(order.status);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
+  const { t } = useLanguage();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -510,11 +530,11 @@ function EditOrderModal({
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50" onClick={onClose}>
       <div className="bg-white rounded-lg shadow-xl p-6 max-w-md w-full mx-4 max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
-        <h3 className="text-lg font-semibold mb-2">Edit Order</h3>
-        <p className="text-sm text-gray-500 mb-4">Order ID: {order.order_id}</p>
+        <h3 className="text-lg font-semibold mb-2">{t.admin.modals.editTitle}</h3>
+        <p className="text-sm text-gray-500 mb-4">{t.admin.table.orderId}: {order.order_id}</p>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Address</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">{t.admin.table.address}</label>
             <input
               type="text"
               value={address}
@@ -524,7 +544,7 @@ function EditOrderModal({
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Product</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">{t.admin.table.productOrdered}</label>
             <input
               type="text"
               value={product}
@@ -534,7 +554,7 @@ function EditOrderModal({
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Quantity</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">{t.admin.table.quantity}</label>
             <input
               type="number"
               min={1}
@@ -544,7 +564,7 @@ function EditOrderModal({
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Unit Price (€)</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">{t.admin.table.totalPrice} (€)</label>
             <input
               type="number"
               min={0}
@@ -555,7 +575,7 @@ function EditOrderModal({
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Status</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1">{t.admin.table.status}</label>
             <select
               value={status}
               onChange={(e) => setStatus(e.target.value)}
@@ -569,14 +589,14 @@ function EditOrderModal({
           {error && <p className="text-sm text-red-600">{error}</p>}
           <div className="flex justify-end gap-2 pt-2">
             <button type="button" onClick={onClose} className="rounded-md border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50">
-              Cancel
+              {t.admin.modals.cancel}
             </button>
             <button
               type="submit"
               disabled={submitting}
               className="rounded-md bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700 disabled:opacity-50"
             >
-              {submitting ? "Saving..." : "Save"}
+              {submitting ? "..." : t.admin.modals.save}
             </button>
           </div>
         </form>

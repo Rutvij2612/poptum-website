@@ -44,6 +44,7 @@ async function buildAll() {
   execSync("npm install", { cwd: "client", stdio: "inherit", env: devEnv });
   execSync("npm run build", { cwd: "client", stdio: "inherit", env: devEnv });
   await cp("client/dist", "dist/public", { recursive: true });
+  await cp("server/assets", "dist/server/assets", { recursive: true });
 
   console.log("building server...");
   const pkg = JSON.parse(await readFile("package.json", "utf-8"));

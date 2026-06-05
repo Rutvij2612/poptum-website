@@ -20,6 +20,9 @@ export default function FlavourCard({
   buttonText,
   onViewDetails,
   animationDelay = 0,
+  priceLabel,
+  onAddToCart,
+  isInCart,
 }: FlavourCardProps) {
   const slug = name.toLowerCase().replace(/\s+/g, '-');
 
@@ -46,6 +49,14 @@ export default function FlavourCard({
           </p>
         </div>
 
+        {priceLabel && (
+          <div className="flex justify-center items-center w-full mb-2">
+            <div className="font-semibold text-lg text-foreground">
+              {priceLabel}
+            </div>
+          </div>
+        )}
+
         <div className="flex flex-col sm:flex-row gap-2">
           <Button
             onClick={onViewDetails}
@@ -55,6 +66,16 @@ export default function FlavourCard({
           >
             {buttonText}
           </Button>
+          {onAddToCart && (
+            <Button
+              onClick={onAddToCart}
+              className="flex-1"
+              variant={isInCart ? "secondary" : "default"}
+              data-testid={`button-add-cart-${slug}`}
+            >
+              {isInCart ? "Update Cart" : "Add to Cart"}
+            </Button>
+          )}
         </div>
       </CardContent>
     </Card>

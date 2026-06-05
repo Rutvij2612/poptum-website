@@ -1,14 +1,27 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
 import Navbar from "@/components/Navbar";
-const API = import.meta.env.VITE_API_URL;
+import { useLanguage } from "@/lib/language-context";
+import { Check, X } from "lucide-react";
+
+const API = import.meta.env.VITE_API_URL || "";
+
+function ValidationItem({ isValid, text }: { isValid: boolean; text: string }) {
+  return (
+    <div className={`flex items-center space-x-2 text-xs ${isValid ? "text-green-600" : "text-gray-500"}`}>
+      {isValid ? <Check className="w-3.5 h-3.5" /> : <X className="w-3.5 h-3.5" />}
+      <span>{text}</span>
+    </div>
+  );
+}
 
 export default function Signup() {
   const [, navigate] = useLocation();
   const { toast } = useToast();
+  const { t } = useLanguage();
 
   const [formData, setFormData] = useState({
     firstName: "",
@@ -16,41 +29,44 @@ export default function Signup() {
     username: "",
     email: "",
     phone: "",
+    country: "Germany",
     password: "",
     confirmPassword: "",
   });
   const [loading, setLoading] = useState(false);
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const validations = useMemo(() => {
+    return {
+      length: formData.password.length >= 8,
+      uppercase: /[A-Z]/.test(formData.password),
+      number: /[0-9]/.test(formData.password),
+      special: /[^A-Za-z0-9]/.test(formData.password),
+      match: formData.password === formData.confirmPassword && formData.password.length > 0,
+    };
+  }, [formData.password, formData.confirmPassword]);
+
+  const isValid = Object.values(validations).every(Boolean);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
+    setErrorMsg(null);
   };
 
   async function handleSignup(e: React.FormEvent) {
     e.preventDefault();
     setLoading(true);
+    setErrorMsg(null);
 
-    if (formData.password !== formData.confirmPassword) {
-      toast({
-        title: "Validation Error",
-        description: "Passwords do not match.",
-        variant: "destructive",
-      });
-      setLoading(false);
-      return;
-    }
-
-    if (formData.password.length < 8) {
-      toast({
-        title: "Validation Error",
-        description: "Password must be at least 8 characters long.",
-        variant: "destructive",
-      });
+    if (!isValid) {
+      setErrorMsg("Please meet all password requirements.");
       setLoading(false);
       return;
     }
 
     try {
-const res = await fetch(`${API}/api/auth/signup`, {        method: "POST",
+      const res = await fetch(`${API}/api/auth/signup`, {
+        method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
       });
@@ -64,18 +80,10 @@ const res = await fetch(`${API}/api/auth/signup`, {        method: "POST",
         });
         navigate("/login");
       } else {
-        toast({
-          title: "Signup Failed",
-          description: data.message || "Could not create account",
-          variant: "destructive",
-        });
+        setErrorMsg(data.message || "Could not create account");
       }
     } catch (error) {
-      toast({
-        title: "Error",
-        description: "An unexpected error occurred while signing up.",
-        variant: "destructive",
-      });
+      setErrorMsg("An unexpected error occurred while signing up.");
     } finally {
       setLoading(false);
     }
@@ -89,61 +97,84 @@ const res = await fetch(`${API}/api/auth/signup`, {        method: "POST",
         <div className="w-full max-w-lg space-y-8 bg-gray-50 p-8 rounded-lg shadow-sm border">
           <div className="text-center">
             <h2 className="text-3xl font-bold tracking-tight text-gray-900">
-              Create an account
+              {t.auth.createAccount}
             </h2>
             <p className="mt-2 text-sm text-gray-600">
-              Join us to securely order and manage your profile
+              {t.auth.joinUs}
             </p>
           </div>
 
           <form onSubmit={handleSignup} className="mt-8 space-y-6">
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700">First Name</label>
+                <label className="block text-sm font-medium text-gray-700">{t.auth.firstName}</label>
                 <Input type="text" name="firstName" required value={formData.firstName} onChange={handleChange} className="mt-1" />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700">Last Name</label>
+                <label className="block text-sm font-medium text-gray-700">{t.auth.lastName}</label>
                 <Input type="text" name="lastName" required value={formData.lastName} onChange={handleChange} className="mt-1" />
               </div>
             </div>
 
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700">Username</label>
+                <label className="block text-sm font-medium text-gray-700">{t.auth.username}</label>
                 <Input type="text" name="username" required value={formData.username} onChange={handleChange} className="mt-1" />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700">Email address</label>
+                <label className="block text-sm font-medium text-gray-700">{t.auth.email}</label>
                 <Input type="email" name="email" required value={formData.email} onChange={handleChange} className="mt-1" />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700">Phone Number</label>
+                <label className="block text-sm font-medium text-gray-700">{t.auth.phone}</label>
                 <Input type="tel" name="phone" required value={formData.phone} onChange={handleChange} className="mt-1" />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700">Password</label>
+                <label className="block text-sm font-medium text-gray-700">Country</label>
+                <select
+                  name="country"
+                  required
+                  value={formData.country}
+                  onChange={handleChange}
+                  className="mt-1 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
+                >
+                  <option value="India">India</option>
+                  <option value="Germany">Germany</option>
+                </select>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700">{t.auth.password}</label>
                 <Input type="password" name="password" required value={formData.password} onChange={handleChange} className="mt-1" />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700">Confirm Password</label>
+                <label className="block text-sm font-medium text-gray-700">{t.auth.confirmPassword}</label>
                 <Input type="password" name="confirmPassword" required value={formData.confirmPassword} onChange={handleChange} className="mt-1" />
+              </div>
+              
+              <div className="space-y-1.5 py-1">
+                <ValidationItem isValid={validations.length} text="At least 8 characters" />
+                <ValidationItem isValid={validations.uppercase} text="At least 1 uppercase letter" />
+                <ValidationItem isValid={validations.number} text="At least 1 number" />
+                <ValidationItem isValid={validations.special} text="At least 1 special character" />
+                <ValidationItem isValid={validations.match} text="Passwords match" />
               </div>
             </div>
 
-            <Button type="submit" className="w-full" disabled={loading}>
-              {loading ? "Creating Account..." : "Sign Up"}
+            {errorMsg && <p className="text-sm text-red-500 text-center font-medium">{errorMsg}</p>}
+
+            <Button type="submit" className="w-full" disabled={loading || !isValid}>
+              {loading ? t.auth.creating : t.auth.createAccount}
             </Button>
             
             <div className="mt-4 text-center">
               <p className="text-sm text-gray-600">
-                Already have an account?{" "}
+                {t.auth.alreadyHaveAccount}{" "}
                 <button
                   type="button"
                   className="text-primary hover:underline font-semibold"
                   onClick={() => navigate("/login")}
                 >
-                  Log in
+                  {t.auth.login}
                 </button>
               </p>
             </div>

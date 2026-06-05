@@ -3,7 +3,8 @@ import { Menu, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useLanguage } from '@/lib/language-context';
 import { motion } from 'framer-motion';
-
+import { useLocation } from "wouter";
+import { getAuth, logout } from "@/lib/auth";
 const navItems = [
   { key: 'home', href: '#home' },
   { key: 'about', href: '#about' },
@@ -19,6 +20,54 @@ export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const { language, setLanguage, t } = useLanguage();
+  const [location, setLocation] = useLocation();
+  const [authState, setAuthState] = useState(() => getAuth());
+  const { token, role, username } = authState;
+  const [firstName, setFirstName] = useState<string | null>(null);
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+
+  useEffect(() => {
+    setAuthState(getAuth());
+  }, [location]);
+
+  useEffect(() => {
+    if (!token) {
+      setFirstName(null);
+      return;
+    }
+    const fetchProfile = async () => {
+      try {
+        const res = await fetch('/api/auth/me', {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        const data = await res.json();
+        if (res.ok && data.success && data.user?.firstName) {
+          setFirstName(data.user.firstName);
+        } else {
+          setFirstName(username || 'User');
+        }
+      } catch (e) {
+        console.error("Failed to fetch profile in navbar", e);
+        setFirstName(username || 'User');
+      }
+    };
+    fetchProfile();
+  }, [token, username]);
+
+  const displayName = firstName || username || 'User';
+
+  useEffect(() => {
+    if (!dropdownOpen) return;
+    const handleClose = () => setDropdownOpen(false);
+    window.addEventListener("click", handleClose);
+    return () => window.removeEventListener("click", handleClose);
+  }, [dropdownOpen]);
+
+  const handleLogout = () => {
+    logout();
+    setAuthState({ token: null, role: null, username: null, country: null });
+    setLocation("/");
+  };
 
   useEffect(() => {
     const handleScroll = () => {
@@ -102,6 +151,57 @@ export default function Navbar() {
               </button>
             </div>
 
+            {token ? (
+              <div className="relative hidden md:block ml-2">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="flex items-center gap-1 font-semibold text-sm hover:bg-accent/60"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setDropdownOpen(!dropdownOpen);
+                  }}
+                  data-testid="navbar-user-dropdown-trigger"
+                >
+                  <span>{displayName}</span>
+                  <span className="text-xs transition-transform duration-200" style={{ display: 'inline-block', transform: dropdownOpen ? 'rotate(180deg)' : 'none' }}>▼</span>
+                </Button>
+
+                {dropdownOpen && (
+                  <div className="absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white border border-border py-1 z-50 animate-fade-in" data-testid="navbar-user-dropdown-menu">
+                    <button
+                      onClick={() => {
+                        setDropdownOpen(false);
+                        setLocation(role === "admin" ? "/admin" : "/dashboard");
+                      }}
+                      className="block w-full text-left px-4 py-2 text-sm text-foreground hover:bg-accent transition-colors font-medium"
+                    >
+                      {role === "admin" ? t.admin.dashboard : t.admin.userDashboard}
+                    </button>
+                    <button
+                      onClick={() => {
+                        setDropdownOpen(false);
+                        handleLogout();
+                      }}
+                      className="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 hover:text-red-700 transition-colors font-medium border-t"
+                    >
+                      {t.admin.logout}
+                    </button>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <div className="hidden md:flex items-center ml-2">
+                <Button 
+                  variant="outline" 
+                  size="sm"
+                  onClick={() => setLocation("/login")}
+                >
+                  {t.auth.login}
+                </Button>
+              </div>
+            )}
+
             <Button
               variant="ghost"
               size="icon"
@@ -159,6 +259,47 @@ export default function Navbar() {
                 {t.nav[item.key as keyof typeof t.nav]}
               </button>
             ))}
+             {token ? (
+              <>
+                <div className={`px-4 py-2 text-xs font-semibold uppercase tracking-wider ${isScrolled ? 'text-gray-500' : 'text-gray-400'}`}>
+                  {displayName}
+                </div>
+                <button
+                  onClick={() => {
+                    setMobileMenuOpen(false);
+                    setLocation(role === "admin" ? "/admin" : "/dashboard");
+                  }}
+                  className={`block w-full text-left px-4 py-3 text-base font-medium rounded-md hover-elevate ${
+                    isScrolled ? 'text-black' : 'text-white'
+                  }`}
+                >
+                  {role === "admin" ? t.admin.dashboard : t.admin.userDashboard}
+                </button>
+                <button
+                  onClick={() => {
+                    setMobileMenuOpen(false);
+                    handleLogout();
+                  }}
+                  className={`block w-full text-left px-4 py-3 text-base font-medium rounded-md hover-elevate ${
+                    isScrolled ? 'text-red-600' : 'text-red-400'
+                  }`}
+                >
+                  {t.admin.logout}
+                </button>
+              </>
+            ) : (
+              <button
+                onClick={() => {
+                  setMobileMenuOpen(false);
+                  setLocation("/login");
+                }}
+                className={`block w-full text-left px-4 py-3 text-base font-medium rounded-md hover-elevate ${
+                  isScrolled ? 'text-black' : 'text-white'
+                }`}
+              >
+                {t.auth.login}
+              </button>
+            )}
           </div>
         </div>
       )}

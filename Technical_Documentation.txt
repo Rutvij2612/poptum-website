@@ -1,0 +1,81 @@
+POPTUM CATALOGUE - TECHNICAL DOCUMENTATION
+==========================================
+
+This document provides a comprehensive technical overview of the Poptum website project. It is intended for Technical Leads or incoming developers to understand the project's architecture, technology stack, features, and implementations.
+
+1. TECHNOLOGY STACK
+-------------------
+Frontend:
+- Framework: React 18 built with Vite
+- Language: TypeScript
+- Styling: TailwindCSS (v4) for utility-first styling, clsx & tailwind-merge for class management
+- Animations: Framer Motion for dynamic "popping" and UI animations, tailwindcss-animate
+- UI Components: Radix UI primitives (accessible, unstyled components like Dialog, Popover, Dropdown, Tooltip)
+- Routing: Wouter (lightweight React router)
+- Form Handling & Validation: React Hook Form coupled with Zod
+- Data Fetching & State: TanStack Query (React Query)
+- Icons: Lucide React and React Icons
+
+Backend:
+- Runtime: Node.js with Express.js framework
+- Language: TypeScript (executed via tsx in dev)
+- Database: PostgreSQL (hosted on Supabase)
+- ORM: Drizzle ORM (for type-safe database queries and schema definitions)
+- Email Service: Nodemailer (configured with SMTP, enforcing IPv4 for cloud compatibility)
+- PDF Generation: PDFKit (generates invoices on the fly)
+- Authentication: Jsonwebtoken (JWT) for secure session management, Bcrypt for password hashing
+
+2. CORE FEATURES & IMPLEMENTATIONS
+----------------------------------
+
+A. Authentication, Validation & Security
+- Signup/Login: Users can register and log in. Data is validated on both client and server using Zod schemas.
+- Password Security: Enforced strong passwords (min 8 characters, uppercase, number, special character). Passwords are hashed using Bcrypt (salt rounds: 10) before being saved to the database.
+- Forget Password / Reset Flow: 
+  - User requests a reset link via email.
+  - Backend generates a secure, time-limited token.
+  - Nodemailer sends an email containing the reset link.
+  - User submits the new password with the token, which is verified before updating the database.
+- Role-Based Access Control (RBAC): Users are assigned roles ('user' or 'admin'). Protected routes (like the Admin Dashboard) verify the JWT token and the user's role before granting access.
+
+B. E-Commerce Ordering System (Amazon-like Flow)
+- Product Selection: Users can select products and define quantities.
+- Checkout Process: Collects comprehensive customer details (Full Name, Email, Phone, Address, City, Postal Code, Country).
+- Currency & Localization: Dynamically formats currency to EUR (Germany) or INR (India) based on the user's selected country.
+- Payment Integration: Supports 'Card' and dynamic 'UPI' QR code payments.
+- Order State Machine: Orders start as "pending" payment. A 15-minute expiration timer is implemented for pending sessions. Once payment is verified, the state transitions to "paid".
+- PDF Invoicing: Upon successful payment verification, PDFKit generates a customized invoice PDF containing order details, subtotal, taxes, delivery, and grand total.
+- Automated Emails: Both the business owner and the customer receive automated confirmation emails (in English or German) with the attached PDF invoice.
+
+C. Admin Dashboard (CRUD Operations)
+- The admin dashboard is a secure area restricted to 'admin' users.
+- Read: Fetches and displays a tabular view of all orders in the system, sorted by creation date.
+- Create: Admins can manually create new orders directly from the dashboard, bypassing the standard checkout flow.
+- Update: Admins can dynamically update order statuses (Ordered, Processing, Shipped, Delivered, Cancelled) and edit specific order details (customer info, product, quantity, pricing).
+- Delete: Admins can permanently delete orders from the database with a confirmation prompt.
+- Issue Tracking: Admins can view specific issue notes left by customers.
+
+D. Multilingual Support
+- The application provides full bilingual support (English and German).
+- A custom React Context (`LanguageProvider`) manages the current language state across the app.
+- All UI text, validation messages, and automated emails are dynamically rendered based on the selected language context.
+
+E. Live Rating & Contact Form
+- Rating System: Users can submit a 1 to 5-star rating. Ratings are stored in the `site_ratings` table, and the backend calculates and returns the live average score.
+- Contact Form: Users can send messages directly to the business. The backend uses Nodemailer to silently forward these messages to the owner's email without blocking the UI.
+
+3. DATABASE SCHEMA (Drizzle ORM)
+--------------------------------
+- users: id, firstName, lastName, email, phone, country, username, password_hash, role (user/admin), createdAt.
+- orders: id, orderId (custom POPTUM-*** format), language, customer details, financials (subtotal, tax, delivery, grandTotal), status, paymentMethod, paymentStatus (pending/paid/failed), paymentExpiresAt.
+- order_items: id, orderId (foreign key), productName, quantity, unitPrice, totalPrice.
+- site_ratings: id, rating, createdAt.
+
+4. DEPLOYMENT & INFRASTRUCTURE
+------------------------------
+- Frontend is optimized and built via Vite (`vite build`).
+- Backend executes compiled TypeScript via Node.js.
+- Database connection utilizes Supabase with a connection pooler to ensure resilience and prevent network connectivity issues during high loads.
+- SMTP is strictly configured to use port 587 (STARTTLS) and IPv4 family resolution to bypass restrictive cloud provider firewalls.
+
+This architecture ensures a highly scalable, secure, and professional e-commerce platform capable of handling international customers and seamless order management.

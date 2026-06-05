@@ -117,7 +117,7 @@ export default function Footer() {
                 <SiFacebook className="w-5 h-5" />
               </a>
               <a
-                href="https://linkedin.com/company/poptum"
+                href="https://www.linkedin.com/in/poptum-premium-fox-nuts-makhana-50665a412"
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="LinkedIn"

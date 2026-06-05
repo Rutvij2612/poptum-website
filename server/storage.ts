@@ -35,6 +35,7 @@ export class MemStorage implements IStorage {
       email: insertUser.email ?? null,
       phone: insertUser.phone ?? null,
       role: insertUser.role ?? "user",
+      country: insertUser.country ?? "Germany",
       createdAt: new Date(),
       ...insertUser,
       id

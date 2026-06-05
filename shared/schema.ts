@@ -16,6 +16,7 @@ export const users = pgTable("users", {
   lastName: text("last_name"),
   email: text("email").unique(),
   phone: text("phone"),
+  country: text("country").notNull().default("Germany"),
   username: text("username").notNull().unique(),
   password: text("password_hash").notNull(),
   role: text("role").notNull().default("user"), // user or admin
@@ -28,6 +29,7 @@ export const insertUserSchema = createInsertSchema(users).pick({
   lastName: true,
   email: true,
   phone: true,
+  country: true,
   username: true,
   password: true,
   role: true,
@@ -58,6 +60,7 @@ export const orders = pgTable("orders", {
   address: text("address").notNull(),
   city: text("city").notNull(),
   postalCode: text("postal_code").notNull(),
+  state: text("state"),
   country: text("country").notNull(),
   subtotal: numeric("subtotal", { precision: 10, scale: 2 }).notNull(),
   tax: numeric("tax", { precision: 10, scale: 2 }).notNull(),
@@ -66,6 +69,11 @@ export const orders = pgTable("orders", {
   grandTotal: numeric("grand_total", { precision: 10, scale: 2 }).notNull(),
   status: text("status").notNull().default("Ordered"),
   issueNote: text("issue_note"),
+  paymentMethod: text("payment_method"), // "card" | "upi"
+  paymentStatus: text("payment_status").notNull().default("pending"), // "pending" | "paid" | "failed"
+  paymentExpiresAt: timestamp("payment_expires_at", { withTimezone: true }),
+  transactionId: text("transaction_id"),
+  razorpayOrderId: text("razorpay_order_id"),
 });
 
 export const orderItems = pgTable("order_items", {

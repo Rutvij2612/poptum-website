@@ -97,7 +97,22 @@ app.use((req, res, next) => {
   // It is the only port that is not firewalled.
   const port = parseInt(process.env.PORT || "3001", 10);
   httpServer.listen(port, "0.0.0.0", () => {
-  log(`serving on port ${port}`);
-});
+    log(`serving on port ${port}`);
+    
+    // Razorpay and environment diagnostics
+    const isProd = process.env.NODE_ENV === "production";
+    log(`App Running Environment: ${isProd ? "PRODUCTION" : "DEVELOPMENT"}`);
+    
+    const hasKeyId = !!process.env.RAZORPAY_KEY_ID;
+    const hasKeySecret = !!process.env.RAZORPAY_KEY_SECRET;
+    log(`Razorpay Configurations:`);
+    log(`  - RAZORPAY_KEY_ID present: ${hasKeyId ? "YES" : "NO"}`);
+    log(`  - RAZORPAY_KEY_SECRET present: ${hasKeySecret ? "YES" : "NO"}`);
+    if (!hasKeyId || !hasKeySecret) {
+      log(`WARNING: Razorpay is not fully configured. Indian user checkout flows will fail.`);
+    } else {
+      log(`Razorpay is successfully configured and active.`);
+    }
+  });
 
 })();
