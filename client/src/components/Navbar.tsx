@@ -11,10 +11,22 @@ const navItems = [
   { key: 'flavours', href: '#flavours' },
   { key: 'process', href: '#process' },
   { key: 'benefits', href: '#benefits' },
+  { key: 'presence', href: '#presence' },
   // Gallery nav item temporarily removed
   // { key: 'gallery', href: '#gallery' },
   { key: 'contact', href: '#contact' },
 ] as const;
+
+const tickerMessages = [
+  "COMING SOON IN INDIA 🇮🇳",
+  "COMING SOON IN UNITED KINGDOM 🇬🇧",
+  "COMING SOON IN INDIA 🇮🇳",
+  "COMING SOON IN UNITED KINGDOM 🇬🇧",
+  "COMING SOON IN INDIA 🇮🇳",
+  "COMING SOON IN UNITED KINGDOM 🇬🇧",
+  "COMING SOON IN INDIA 🇮🇳",
+  "COMING SOON IN UNITED KINGDOM 🇬🇧",
+];
 
 export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -120,7 +132,9 @@ export default function Navbar() {
 
                 data-testid={`nav-${item.key}`}
               >
-                {t.nav[item.key as keyof typeof t.nav]}
+                {item.key === 'presence'
+                  ? (language === 'de' ? 'Präsenz' : 'Presence')
+                  : t.nav[item.key as keyof typeof t.nav]}
               </button>
             ))}
           </div>
@@ -219,22 +233,22 @@ export default function Navbar() {
       <div className="w-full border-t border-border bg-black text-white">
         <div className="max-w-7xl mx-auto overflow-hidden">
           <motion.div
-            className="flex items-center gap-16 py-2 text-[11px] sm:text-xs md:text-sm font-semibold tracking-[0.25em] uppercase whitespace-nowrap"
+            className="flex items-center gap-8 py-2 text-[11px] sm:text-xs md:text-sm font-semibold tracking-[0.25em] uppercase whitespace-nowrap"
             animate={{ x: ['0%', '-50%'] }}
             transition={{
-              duration: 14,
+              duration: 20,
               ease: 'linear',
               repeat: Infinity,
               repeatType: 'loop',
             }}
           >
-            {t.hero.tickerMessages.map((text: string) => (
-              <span key={text} className="opacity-90">
+            {tickerMessages.map((text: string, index: number) => (
+              <span key={`${text}-${index}`} className="text-[#DE3B3B] font-bold opacity-100">
                 {text}
               </span>
             ))}
-            {t.hero.tickerMessages.map((text: string) => (
-              <span key={`${text}-duplicate`} className="opacity-90">
+            {tickerMessages.map((text: string, index: number) => (
+              <span key={`${text}-${index}-duplicate`} className="text-[#DE3B3B] font-bold opacity-100">
                 {text}
               </span>
             ))}
@@ -256,7 +270,9 @@ export default function Navbar() {
 
                 data-testid={`mobile-nav-${item.key}`}
               >
-                {t.nav[item.key as keyof typeof t.nav]}
+                {item.key === 'presence'
+                  ? (language === 'de' ? 'Präsenz' : 'Presence')
+                  : t.nav[item.key as keyof typeof t.nav]}
               </button>
             ))}
              {token ? (
