@@ -37,6 +37,13 @@ const stores = [
     address: "Bahnhofstraße 29, 86150 Augsburg, Germany",
     link: "https://share.google/T4FEoZ4r4U0sXsaJD",
     initials: "PA"
+  },
+  {
+    id: 6,
+    name: "JP Asia & Afro Supermarket",
+    address: "Zossener Str. 13, 10961 Berlin, Germany",
+    link: "https://share.google/fQHNrYayYiGJluccu",
+    initials: "JP"
   }
 ];
 
@@ -74,12 +81,12 @@ export default function PresenceSection() {
                   <div className="w-16 h-16 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold text-xl mb-4 group-hover:bg-primary/20 group-hover:scale-105 transition-all duration-300 shadow-inner">
                     {store.initials}
                   </div>
-                  
+
                   {/* Store Name */}
                   <h4 className="font-semibold text-foreground text-sm tracking-tight mb-2 group-hover:text-primary transition-colors duration-200 line-clamp-2 min-h-[40px] flex items-center justify-center w-full">
                     {store.name}
                   </h4>
-                  
+
                   {/* Address */}
                   <p className="text-xs text-muted-foreground flex items-start gap-1 w-full justify-center text-center leading-relaxed">
                     <MapPin className="w-3.5 h-3.5 mt-0.5 shrink-0 text-muted-foreground/60" />
@@ -88,7 +95,7 @@ export default function PresenceSection() {
                     </span>
                   </p>
                 </div>
-                
+
                 {/* Visit Store Action indicator */}
                 <div className="mt-5 pt-3 border-t border-muted w-full flex items-center justify-center gap-1.5 text-xs font-semibold text-primary/80 group-hover:text-primary transition-colors duration-200">
                   <span>{language === 'de' ? 'Geschäft besuchen' : 'Visit Store'}</span>
