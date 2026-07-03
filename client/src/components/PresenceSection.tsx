@@ -44,6 +44,13 @@ const stores = [
     address: "Zossener Str. 13, 10961 Berlin, Germany",
     link: "https://share.google/fQHNrYayYiGJluccu",
     initials: "JP"
+  },
+  {
+    id: 7,
+    name: "Laxy Cash and Carry",
+    address: "Urbanstraße 29, 10967 Berlin-Bezirk Friedrichshain-Kreuzberg, Germany",
+    link: "https://share.google/UaCw68IJr3Zk0lKvE",
+    initials: "LC"
   }
 ];
 
