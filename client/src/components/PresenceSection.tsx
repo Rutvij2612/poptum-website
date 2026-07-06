@@ -33,7 +33,7 @@ const stores = [
   },
   {
     id: 5,
-    name: "Punjab Asiashop",
+    name: "Punjab Asia Shop",
     address: "Bahnhofstraße 29, 86150 Augsburg, Germany",
     link: "https://share.google/T4FEoZ4r4U0sXsaJD",
     initials: "PA"
@@ -51,6 +51,33 @@ const stores = [
     address: "Urbanstraße 29, 10967 Berlin-Bezirk Friedrichshain-Kreuzberg, Germany",
     link: "https://share.google/UaCw68IJr3Zk0lKvE",
     initials: "LC"
+  },
+  {
+    id: 8,
+    name: "Golden Ilakkiya Asia Super Market",
+    address: "Rheinstraße 16, 12159 Berlin-Bezirk Tempelhof-Schöneberg, Germany",
+    link: "https://share.google/EZJ5SahV3cakOtRa8",
+    initials: "GI"
+  },
+  {
+    id: 9,
+    name: "Bollywood Store - Indischer Supermarkt",
+    address: "Augustenstraße 88, 80798 München, Germany",
+    link: "https://share.google/fz9BivzBOLXWtrYmu",
+    initials: "BS"
+  },
+  {
+    id: 10,
+    name: "Spice Bridge Indian and German Grocery Supermarket",
+    address: "Beckerstraße 9, 12157 Berlin, Germany",
+    link: "https://share.google/gTdduER8yOVsqWZSr",
+    initials: "SB"
+  },
+  {
+    id: 11,
+    name: "Aparimita Global Ltd",
+    address: "120 Cavendish Place, England, BN213TZ United Kingdom",
+    initials: "AG"
   }
 ];
 
@@ -74,23 +101,19 @@ export default function PresenceSection() {
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-6">
-          {stores.map((store) => (
-            <a
-              key={store.id}
-              href={store.link}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="group flex flex-col h-full bg-white rounded-xl border border-border/80 p-6 shadow-sm hover:shadow-md hover:border-primary/40 hover:-translate-y-1 transition-all duration-300"
-            >
+          {stores.map((store) => {
+            const hasLink = !!store.link;
+            
+            const cardContent = (
               <div className="flex flex-col h-full justify-between items-center text-center">
                 <div className="flex flex-col items-center w-full">
                   {/* Branded Logo/Initials Placeholder */}
-                  <div className="w-16 h-16 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold text-xl mb-4 group-hover:bg-primary/20 group-hover:scale-105 transition-all duration-300 shadow-inner">
+                  <div className={`w-16 h-16 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold text-xl mb-4 transition-all duration-300 shadow-inner ${hasLink ? 'group-hover:bg-primary/20 group-hover:scale-105' : ''}`}>
                     {store.initials}
                   </div>
 
                   {/* Store Name */}
-                  <h4 className="font-semibold text-foreground text-sm tracking-tight mb-2 group-hover:text-primary transition-colors duration-200 line-clamp-2 min-h-[40px] flex items-center justify-center w-full">
+                  <h4 className={`font-semibold text-foreground text-sm tracking-tight mb-2 transition-colors duration-200 line-clamp-2 min-h-[40px] flex items-center justify-center w-full ${hasLink ? 'group-hover:text-primary' : ''}`}>
                     {store.name}
                   </h4>
 
@@ -104,13 +127,38 @@ export default function PresenceSection() {
                 </div>
 
                 {/* Visit Store Action indicator */}
-                <div className="mt-5 pt-3 border-t border-muted w-full flex items-center justify-center gap-1.5 text-xs font-semibold text-primary/80 group-hover:text-primary transition-colors duration-200">
-                  <span>{language === 'de' ? 'Geschäft besuchen' : 'Visit Store'}</span>
-                  <ExternalLink className="w-3 h-3 text-primary/80 group-hover:text-primary transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-                </div>
+                {hasLink && (
+                  <div className="mt-5 pt-3 border-t border-muted w-full flex items-center justify-center gap-1.5 text-xs font-semibold text-primary/80 group-hover:text-primary transition-colors duration-200">
+                    <span>{language === 'de' ? 'Geschäft besuchen' : 'Visit Store'}</span>
+                    <ExternalLink className="w-3 h-3 text-primary/80 group-hover:text-primary transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                  </div>
+                )}
               </div>
-            </a>
-          ))}
+            );
+
+            if (hasLink) {
+              return (
+                <a
+                  key={store.id}
+                  href={store.link}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group flex flex-col h-full bg-white rounded-xl border border-border/80 p-6 shadow-sm hover:shadow-md hover:border-primary/40 hover:-translate-y-1 transition-all duration-300"
+                >
+                  {cardContent}
+                </a>
+              );
+            }
+
+            return (
+              <div
+                key={store.id}
+                className="flex flex-col h-full bg-white rounded-xl border border-border/80 p-6 shadow-sm transition-all duration-300"
+              >
+                {cardContent}
+              </div>
+            );
+          })}
         </div>
       </div>
     </section>
