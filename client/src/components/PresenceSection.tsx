@@ -78,6 +78,13 @@ const stores = [
     name: "Aparimita Global Ltd",
     address: "120 Cavendish Place, England, BN213TZ United Kingdom",
     initials: "AG"
+  },
+  {
+    id: 12,
+    name: "Maedah Foods | Indian & International Supermarket",
+    address: "Hauptstraße 154, 10827 Berlin, Germany",
+    link: "https://share.google/LjDbvlNFbcqSLh4DV",
+    initials: "MF"
   }
 ];
 
@@ -103,7 +110,7 @@ export default function PresenceSection() {
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-6">
           {stores.map((store) => {
             const hasLink = !!store.link;
-            
+
             const cardContent = (
               <div className="flex flex-col h-full justify-between items-center text-center">
                 <div className="flex flex-col items-center w-full">

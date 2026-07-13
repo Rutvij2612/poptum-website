@@ -1,4 +1,5 @@
 import { useLanguage } from '@/lib/language-context';
+import { useLocation } from 'wouter';
 import {
   SiInstagram,
   SiFacebook,
@@ -8,10 +9,15 @@ import { FaLinkedin } from "react-icons/fa";
 
 export default function Footer() {
   const { t, language, setLanguage } = useLanguage();
+  const [location, setLocation] = useLocation();
 
   const currentYear = new Date().getFullYear();
 
   const scrollToSection = (href: string) => {
+    if (location !== "/") {
+      setLocation("/" + href);
+      return;
+    }
     const element = document.querySelector(href);
     if (element) {
       element.scrollIntoView({ behavior: 'smooth' });
@@ -90,6 +96,7 @@ export default function Footer() {
               ))}
             </nav>
           </div>
+
 
           <div>
             <h4 className="font-heading font-semibold text-foreground mb-4">

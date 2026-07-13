@@ -2289,13 +2289,13 @@ const [cartItems, setCartItems] = useState<CartItem[]>(() => {
                         )}
                       </>
                     )}
-
                     <div className="text-lg font-bold text-primary border-t pt-3 mt-3">
                       {language === 'de' ? 'Zu zahlen: ' : 'Amount Payable: '}
                       {formatPriceByCountry(grandTotal, formValues.country || loggedInCountry)}
                     </div>
                   </div>
                 )}
+
 
                 <div className="flex flex-col sm:flex-row gap-3 pt-2">
                   {checkoutStep === 'details' ? (

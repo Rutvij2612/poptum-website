@@ -47,6 +47,9 @@ export default function FlavourCard({
           <p className="text-muted-foreground text-sm mb-1 line-clamp-2">
             {description}
           </p>
+          <div className="text-muted-foreground text-sm font-medium mt-3" data-testid={`nutrition-${slug}`}>
+            50g • 206 kcal
+          </div>
         </div>
 
         {priceLabel && (

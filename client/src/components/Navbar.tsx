@@ -89,6 +89,10 @@ export default function Navbar() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
   const scrollToSection = (href: string) => {
+    if (location !== "/") {
+      setLocation("/" + href);
+      return;
+    }
     const element = document.querySelector(href);
     if (element) {
       element.scrollIntoView({ behavior: 'smooth' });

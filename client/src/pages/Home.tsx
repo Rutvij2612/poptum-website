@@ -59,6 +59,20 @@ export default function Home() {
     };
   }, []);
 
+  // Scroll to section on load/reveal if there's a hash in the URL
+  useEffect(() => {
+    if (!showLoading && window.location.hash) {
+      const hash = window.location.hash;
+      const timer = setTimeout(() => {
+        const element = document.querySelector(hash);
+        if (element) {
+          element.scrollIntoView({ behavior: 'smooth' });
+        }
+      }, 200); // 200ms ensures DOM has settled
+      return () => clearTimeout(timer);
+    }
+  }, [showLoading]);
+
   return (
     <>
       <AnimatePresence>

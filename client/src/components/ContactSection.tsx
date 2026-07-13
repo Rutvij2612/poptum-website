@@ -8,6 +8,15 @@ import { Mail, Phone, Globe, MapPin, Star } from 'lucide-react';
 import { useLanguage } from '@/lib/language-context';
 import { useToast } from '@/hooks/use-toast';
 import { CheckCircle2 } from 'lucide-react';
+import {
+  CONTACT_EMAIL,
+  CONTACT_WEBSITE,
+  CONTACT_PHONES,
+  MANUFACTURER_NAME,
+  MANUFACTURER_ADDRESS,
+  EXPORTER_NAME,
+  EXPORTER_ADDRESS
+} from '@/lib/constants';
 
 export default function ContactSection() {
   const { t } = useLanguage();
@@ -225,31 +234,31 @@ export default function ContactSection() {
 
               <div className="space-y-4">
                 <a
-                  href="https://www.poptum.in"
+                  href={`https://${CONTACT_WEBSITE}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex items-center gap-3 text-muted-foreground hover:text-foreground transition-colors"
                   data-testid="link-website"
                 >
                   <Globe className="w-5 h-5 text-primary" />
-                  <span>www.poptum.in</span>
+                  <span>{CONTACT_WEBSITE}</span>
                 </a>
 
                 <a
-                  href="mailto:info.poptum@gmail.com"
+                  href={`mailto:${CONTACT_EMAIL}`}
                   className="flex items-center gap-3 text-muted-foreground hover:text-foreground transition-colors"
                   data-testid="link-email"
                 >
                   <Mail className="w-5 h-5 text-primary" />
-                  <span>info.poptum@gmail.com</span>
+                  <span>{CONTACT_EMAIL}</span>
                 </a>
 
                 <div className="flex items-start gap-3 text-muted-foreground">
                   <Phone className="w-5 h-5 text-primary mt-0.5" />
                   <div className="space-y-1">
-                    <p>+91 9601061178</p>
-                    <p>+49 15510542629</p>
-                    <p>+49 15209498862</p>
+                    {CONTACT_PHONES.map((phone) => (
+                      <p key={phone}>{phone}</p>
+                    ))}
                   </div>
                 </div>
               </div>
@@ -263,8 +272,8 @@ export default function ContactSection() {
                 <div className="flex items-start gap-3 text-muted-foreground">
                   <MapPin className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
                   <p className="text-sm">
-                    Tirhuthwala Innovations Pvt. Ltd.<br />
-                    Samastipur, Bihar 848132 (India)
+                    {MANUFACTURER_NAME}<br />
+                    {MANUFACTURER_ADDRESS}
                   </p>
                 </div>
               </div>
@@ -276,9 +285,8 @@ export default function ContactSection() {
                 <div className="flex items-start gap-3 text-muted-foreground">
                   <MapPin className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
                   <p className="text-sm">
-                    Moforce Exim, C-3-6, Radha Park,<br />
-                    B/H White House, Kalavad Road,<br />
-                    Rajkot 360005 (India)
+                    {EXPORTER_NAME}, {EXPORTER_ADDRESS.split(',')[0]}, {EXPORTER_ADDRESS.split(',')[1]}<br />
+                    {EXPORTER_ADDRESS.split(',').slice(2).join(',')}
                   </p>
                 </div>
               </div>
