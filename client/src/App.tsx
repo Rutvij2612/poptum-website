@@ -11,6 +11,8 @@ import Signup from "@/pages/Signup";
 import AdminDashboard from "@/pages/AdminDashboard";
 import UserDashboard from "@/pages/UserDashboard";
 import ResetPassword from "@/pages/ResetPassword";
+import PrivacyPolicy from "@/pages/PrivacyPolicy";
+import TermsAndConditions from "@/pages/TermsAndConditions";
 import { getAuth } from "@/lib/auth";
 
 // Protected Route Component
@@ -35,6 +37,8 @@ function Router() {
       <Route path="/login" component={Login} />
       <Route path="/signup" component={Signup} />
       <Route path="/reset-password" component={ResetPassword} />
+      <Route path="/privacy-policy" component={PrivacyPolicy} />
+      <Route path="/terms-and-conditions" component={TermsAndConditions} />
       <Route path="/admin">
         {() => <ProtectedRoute component={AdminDashboard} adminOnly={true} />}
       </Route>

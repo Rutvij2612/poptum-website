@@ -11,7 +11,7 @@ const API = import.meta.env.VITE_API_URL || "";
 export default function Login() {
   const [, navigate] = useLocation();
   const { toast } = useToast();
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
 
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -156,6 +156,32 @@ const res = await fetch(`${API}/api/auth/login`, {        method: "POST",
                       className="mt-1"
                     />
                   </div>
+                </div>
+
+                <div className="text-xs text-gray-500 text-center leading-normal">
+                  {language === 'de' ? (
+                    <>
+                      Bitte lesen Sie unsere{" "}
+                      <a href="/terms-and-conditions" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline font-semibold">
+                        Allgemeinen Geschäftsbedingungen
+                      </a>{" "}
+                      und unsere{" "}
+                      <a href="/privacy-policy" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline font-semibold">
+                        Datenschutzerklärung
+                      </a>.
+                    </>
+                  ) : (
+                    <>
+                      Please review our{" "}
+                      <a href="/terms-and-conditions" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline font-semibold">
+                        Terms & Conditions
+                      </a>{" "}
+                      and{" "}
+                      <a href="/privacy-policy" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline font-semibold">
+                        Privacy Policy
+                      </a>.
+                    </>
+                  )}
                 </div>
 
                 <Button type="submit" className="w-full" disabled={loading}>

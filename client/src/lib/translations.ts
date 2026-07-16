@@ -138,6 +138,8 @@ export const translations = {
       quickLinks: 'Quick Links',
       followUs: 'Follow Us',
       developedBy: 'Developed by',
+      privacyPolicy: 'Privacy Policy',
+      termsConditions: 'Terms & Conditions',
     },
     cart: {
       added: "added to cart",
@@ -444,6 +446,8 @@ export const translations = {
       quickLinks: 'Schnelllinks',
       followUs: 'Folgen Sie Uns',
       developedBy: 'Entwickelt von',
+      privacyPolicy: 'Datenschutzerklärung',
+      termsConditions: 'Allgemeine Geschäftsbedingungen',
     },
     cart: {
       added: "zum Warenkorb hinzugefügt",

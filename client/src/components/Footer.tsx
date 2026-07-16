@@ -149,9 +149,29 @@ export default function Footer() {
         </div>
 
         <div className="border-t mt-8 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
-          <p className="text-sm text-muted-foreground">
-            &copy; {currentYear} Poptum. {t.footer.rights}
-          </p>
+          <div className="flex flex-col sm:flex-row items-center gap-2 sm:gap-4">
+            <p className="text-sm text-muted-foreground">
+              &copy; {currentYear} Poptum. {t.footer.rights}
+            </p>
+            <span className="hidden sm:inline text-muted-foreground/40">|</span>
+            <div className="flex gap-4 text-sm">
+              <a
+                href="/privacy-policy"
+                className="text-muted-foreground hover:text-primary transition-colors hover:underline font-medium"
+                data-testid="footer-link-privacy"
+              >
+                {t.footer.privacyPolicy || 'Privacy Policy'}
+              </a>
+              <span className="text-muted-foreground/30">|</span>
+              <a
+                href="/terms-and-conditions"
+                className="text-muted-foreground hover:text-primary transition-colors hover:underline font-medium"
+                data-testid="footer-link-terms"
+              >
+                {t.footer.termsConditions || 'Terms & Conditions'}
+              </a>
+            </div>
+          </div>
           <p className="text-sm text-muted-foreground">
             {t.footer.developedBy || 'Developed by'} <a href="https://www.linkedin.com/in/rutvij-borisagar-154717288" target="_blank" rel="noopener noreferrer" className="hover:text-primary transition-colors hover:underline">Rutvij B. Borisagar</a>
           </p>

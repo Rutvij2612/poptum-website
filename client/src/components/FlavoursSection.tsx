@@ -2296,6 +2296,33 @@ const [cartItems, setCartItems] = useState<CartItem[]>(() => {
                   </div>
                 )}
 
+                {checkoutStep !== 'verification' && (
+                  <p className="text-[11px] text-muted-foreground text-center leading-normal mt-2">
+                    {language === 'de' ? (
+                      <>
+                        Durch das Fortfahren stimmen Sie unseren{' '}
+                        <a href="/terms-and-conditions" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline font-semibold">
+                          Allgemeinen Geschäftsbedingungen
+                        </a>{' '}
+                        zu und bestätigen die Kenntnisnahme unserer{' '}
+                        <a href="/privacy-policy" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline font-semibold">
+                          Datenschutzerklärung
+                        </a>.
+                      </>
+                    ) : (
+                      <>
+                        By proceeding, you agree to our{' '}
+                        <a href="/terms-and-conditions" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline font-semibold">
+                          Terms & Conditions
+                        </a>{' '}
+                        and acknowledge our{' '}
+                        <a href="/privacy-policy" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline font-semibold">
+                          Privacy Policy
+                        </a>.
+                      </>
+                    )}
+                  </p>
+                )}
 
                 <div className="flex flex-col sm:flex-row gap-3 pt-2">
                   {checkoutStep === 'details' ? (

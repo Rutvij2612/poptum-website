@@ -21,7 +21,7 @@ function ValidationItem({ isValid, text }: { isValid: boolean; text: string }) {
 export default function Signup() {
   const [, navigate] = useLocation();
   const { toast } = useToast();
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
 
   const [formData, setFormData] = useState({
     firstName: "",
@@ -161,6 +161,32 @@ export default function Signup() {
             </div>
 
             {errorMsg && <p className="text-sm text-red-500 text-center font-medium">{errorMsg}</p>}
+
+            <div className="text-xs text-gray-500 text-center leading-normal">
+              {language === 'de' ? (
+                <>
+                  Mit der Registrierung stimmen Sie unseren{" "}
+                  <a href="/terms-and-conditions" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline font-semibold">
+                    Allgemeinen Geschäftsbedingungen
+                  </a>{" "}
+                  zu und bestätigen die Kenntnisnahme unserer{" "}
+                  <a href="/privacy-policy" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline font-semibold">
+                    Datenschutzerklärung
+                  </a>.
+                </>
+              ) : (
+                <>
+                  By creating an account, you agree to our{" "}
+                  <a href="/terms-and-conditions" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline font-semibold">
+                    Terms & Conditions
+                  </a>{" "}
+                  and acknowledge our{" "}
+                  <a href="/privacy-policy" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline font-semibold">
+                    Privacy Policy
+                  </a>.
+                </>
+              )}
+            </div>
 
             <Button type="submit" className="w-full" disabled={loading || !isValid}>
               {loading ? t.auth.creating : t.auth.createAccount}
