@@ -57,13 +57,23 @@ export default function AboutSection() {
           </div>
         </div>
 
-        <div className="bg-background rounded-2xl p-8 lg:p-12">
-          <h3 className="font-heading text-2xl font-semibold text-foreground mb-4 text-center">
-            {t.about.source}
-          </h3>
-          <p className="text-muted-foreground leading-relaxed text-center max-w-3xl mx-auto">
-            {t.about.sourceText}
-          </p>
+        <div className="grid md:grid-cols-2 gap-8">
+          <div className="bg-background rounded-2xl p-8 lg:p-12">
+            <h3 className="font-heading text-2xl font-semibold text-foreground mb-4 text-center">
+              {t.about.source}
+            </h3>
+            <p className="text-muted-foreground leading-relaxed text-center max-w-3xl mx-auto">
+              {t.about.sourceText}
+            </p>
+          </div>
+          <div className="bg-background rounded-2xl p-8 lg:p-12">
+            <h3 className="font-heading text-2xl font-semibold text-foreground mb-4 text-center">
+              {t.about.platform}
+            </h3>
+            <p className="text-muted-foreground leading-relaxed text-center max-w-3xl mx-auto">
+              {t.about.platformText}
+            </p>
+          </div>
         </div>
       </div>
     </section>

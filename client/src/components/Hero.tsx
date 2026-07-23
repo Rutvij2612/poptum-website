@@ -211,10 +211,10 @@ export default function Hero() {
       <div className="relative z-40 max-w-4xl mx-auto px-4 text-center mt-[-8vh]">
         <div className="mb-8 flex justify-center drop-shadow-md">
           <img
-  src="/poptum_logo.png"
-  alt="Poptum"
-  className="h-24 sm:h-32 lg:h-40 object-contain animate-fade-in-down drop-shadow-lg"
-/>
+            src="/poptum_logo.png"
+            alt="Poptum"
+            className="h-24 sm:h-32 lg:h-40 object-contain animate-fade-in-down drop-shadow-lg"
+          />
         </div>
 
         <div className="mb-8 max-w-3xl mx-auto animate-fade-in space-y-1.5 drop-shadow-sm">

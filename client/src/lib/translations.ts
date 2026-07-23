@@ -34,6 +34,8 @@ export const translations = {
       quote: '"Poptum is not just a snack—it\'s India\'s flavorful promise to the world: that healthy can be tasty, and traditional can be truly global."',
       source: 'The Source',
       sourceText: 'Makhana, or fox nuts, originates from Bihar, India. This ancient superfood is antioxidant-rich, protein-rich, and low in calories, offering a wholesome, guilt-free snacking experience for global consumers.',
+      platform: 'Our Platform',
+      platformText: 'POPTUM is an online e-commerce platform for premium roasted makhana (foxnut) snacks. Customers can browse products, create accounts, add products to their cart, place orders, make payments where supported, and receive order-related communications. Customer information is used for purposes such as account authentication, order processing, payment processing where applicable, and order fulfillment.',
     },
     flavours: {
       title: 'Our Flavours',
@@ -342,6 +344,8 @@ export const translations = {
       quote: '"Poptum ist nicht nur ein Snack — es ist Indiens geschmackvolles Versprechen an die Welt: dass gesund lecker sein kann und traditionell wirklich global."',
       source: 'Die Quelle',
       sourceText: 'Makhana, oder Fuchsnüsse, stammt aus Bihar, Indien. Dieses uralte Superfood ist reich an Antioxidantien, proteinreich und kalorienarm und bietet ein gesundes, schuldenfreies Snackerlebnis für globale Verbraucher.',
+      platform: 'Unsere Plattform',
+      platformText: 'POPTUM ist eine Online-E-Commerce-Plattform für erstklassige geröstete Makhana-Snacks (Fuchsnüsse). Kunden können Produkte durchsuchen, Konten erstellen, Produkte in ihren Warenkorb legen, Bestellungen aufgeben, Zahlungen vornehmen (sofern unterstützt) und bestellungsbezogene Mitteilungen erhalten. Kundeninformationen werden für Zwecke wie die Kontoauthentifizierung, die Bestellabwicklung, die Zahlungsabwicklung (falls zutreffend) und die Auftragsabwicklung verwendet.',
     },
     flavours: {
       title: 'Unsere Geschmacksrichtungen',
