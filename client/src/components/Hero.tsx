@@ -30,7 +30,7 @@ export default function Hero() {
     let particleId = 0;
     const interval = setInterval(() => {
       const isMobile = window.innerWidth < 768;
-      
+
       const startX = isMobile ? '2vw' : '22vw';
       const startY = isMobile ? '22vh' : '35vh';
 
@@ -84,8 +84,8 @@ export default function Hero() {
   };
 
   const downloadCatalogue = () => {
-  window.open('/catalogue.pdf', '_blank');
-};
+    window.open('/catalogue.pdf', '_blank');
+  };
 
   return (
     <section
@@ -98,21 +98,21 @@ export default function Hero() {
         className="pointer-events-none absolute -left-32 top-10 h-72 w-72 rounded-full"
         style={{ background: '#FDF3E5', opacity: 0.6, filter: 'blur(40px)' }}
         initial={{ y: -10 }}
-        animate={{ y: [ -10, 10 ] }}
+        animate={{ y: [-10, 10] }}
         transition={{ duration: 18, repeat: Infinity, repeatType: 'reverse', ease: 'easeInOut' }}
       />
       <motion.div
         className="pointer-events-none absolute right-[-6rem] top-32 h-80 w-80 rounded-full"
         style={{ background: '#FFE9D6', opacity: 0.5, filter: 'blur(50px)' }}
         initial={{ y: 8 }}
-        animate={{ y: [ 8, -8 ] }}
+        animate={{ y: [8, -8] }}
         transition={{ duration: 22, repeat: Infinity, repeatType: 'reverse', ease: 'easeInOut', delay: 1 }}
       />
       <motion.div
         className="pointer-events-none absolute left-1/2 -translate-x-1/2 bottom-[-6rem] h-72 w-72 rounded-full"
         style={{ background: '#FFF4EC', opacity: 0.7, filter: 'blur(45px)' }}
         initial={{ y: 0 }}
-        animate={{ y: [ 0, -12 ] }}
+        animate={{ y: [0, -12] }}
         transition={{ duration: 26, repeat: Infinity, repeatType: 'reverse', ease: 'easeInOut', delay: 0.5 }}
       />
 
@@ -161,7 +161,7 @@ export default function Hero() {
       </div>
 
       {/* Left Packets Cluster */}
-      <div 
+      <div
         className="absolute -bottom-4 md:-bottom-24 -left-32 md:-left-24 pointer-events-none w-max"
       >
         <motion.img
@@ -185,7 +185,7 @@ export default function Hero() {
       </div>
 
       {/* Right Packets Cluster */}
-      <div 
+      <div
         className="absolute -bottom-4 md:-bottom-24 -right-32 md:-right-24 pointer-events-none flex justify-end items-end w-max"
       >
         <motion.img
@@ -217,20 +217,60 @@ export default function Hero() {
           />
         </div>
 
-        <div className="mb-8 max-w-3xl mx-auto animate-fade-in space-y-1.5 drop-shadow-sm">
+        <div className="mb-8 max-w-3xl mx-auto animate-fade-in space-y-4 drop-shadow-sm">
+          {/* 1. Purpose description (subtle, clean, elegant text paragraph) */}
           <p
-            className="text-2xl sm:text-3xl lg:text-4xl font-semibold text-foreground relative z-10 bg-white/40 inline-block px-3 py-1 rounded-full backdrop-blur-[2px]"
-            style={{ fontFamily: 'var(--font-display)' }}
+            className="text-xs sm:text-sm font-medium tracking-wide text-foreground/60 max-w-xl mx-auto leading-relaxed"
+            style={{ fontFamily: 'var(--font-sans)' }}
           >
             {t.hero.headingLine1}
           </p>
-          <br/>
-          <p className="text-base sm:text-lg text-foreground bg-white/60 inline-block px-4 py-1.5 rounded-full backdrop-blur-[4px] mt-2 shadow-sm border border-white/40">
-            {t.hero.headingLine2}
-          </p>
-          <br/>
+
+          {/* 2. Three compact visual elements (rounded badges) */}
+          <div className="flex flex-wrap items-center justify-center gap-3 mt-2 max-w-2xl mx-auto">
+            {/* Item 1: Guilt-Free / Schuldfrei */}
+            <span
+              className="px-3.5 py-1 rounded-full text-xs sm:text-sm font-semibold tracking-wide border shadow-2xs backdrop-blur-[2px] transition-all duration-300 hover:scale-105"
+              style={{
+                backgroundColor: 'rgba(235, 245, 230, 0.45)',
+                borderColor: 'rgba(120, 140, 90, 0.25)',
+                color: 'hsl(72, 45%, 30%)',
+                fontFamily: 'var(--font-sans)',
+              }}
+            >
+              {t.hero.headingLine2Items[0]}
+            </span>
+
+            {/* Item 2: Nutritious / Nahrhaft */}
+            <span
+              className="px-3.5 py-1 rounded-full text-xs sm:text-sm font-semibold tracking-wide border shadow-2xs backdrop-blur-[2px] transition-all duration-300 hover:scale-105"
+              style={{
+                backgroundColor: 'rgba(255, 248, 225, 0.45)',
+                borderColor: 'rgba(210, 160, 50, 0.25)',
+                color: 'hsl(38, 70%, 30%)',
+                fontFamily: 'var(--font-sans)',
+              }}
+            >
+              {t.hero.headingLine2Items[1]}
+            </span>
+
+            {/* Item 3: Irresistibly Delicious / Unwiderstehlich Lecker */}
+            <span
+              className="px-3.5 py-1 rounded-full text-xs sm:text-sm font-semibold tracking-wide border shadow-2xs backdrop-blur-[2px] transition-all duration-300 hover:scale-105"
+              style={{
+                backgroundColor: 'rgba(255, 240, 230, 0.45)',
+                borderColor: 'rgba(210, 105, 30, 0.25)',
+                color: 'hsl(20, 70%, 35%)',
+                fontFamily: 'var(--font-sans)',
+              }}
+            >
+              {t.hero.headingLine2Items[2]}
+            </span>
+          </div>
+
+          {/* 3. Existing supporting tagline/order message */}
           {t.hero.headingLine3 && (
-            <p className="text-sm sm:text-base text-muted-foreground/90 bg-white/40 inline-block px-3 py-1 rounded-full backdrop-blur-[2px] mt-2">
+            <p className="text-xs sm:text-sm text-muted-foreground/75 bg-white/30 inline-block px-3 py-1 rounded-full backdrop-blur-[2px] mt-1">
               {t.hero.headingLine3}
             </p>
           )}
@@ -246,14 +286,14 @@ export default function Hero() {
             {t.hero.exploreFlavours}
           </Button>
           <Button
-  asChild
-  size="lg"
-  variant="outline"
-  className="min-w-[200px] bg-white/70 backdrop-blur-md text-foreground border-border hover:bg-accent hover:text-accent-foreground transition-all duration-300 hover:scale-105 hover:shadow-lg shadow-sm"
->
-<a href="/catalogue.pdf" target="_blank" rel="noopener noreferrer">    {t.hero.downloadCatalogue}
-  </a>
-</Button>
+            asChild
+            size="lg"
+            variant="outline"
+            className="min-w-[200px] bg-white/70 backdrop-blur-md text-foreground border-border hover:bg-accent hover:text-accent-foreground transition-all duration-300 hover:scale-105 hover:shadow-lg shadow-sm"
+          >
+            <a href="/catalogue.pdf" target="_blank" rel="noopener noreferrer">    {t.hero.downloadCatalogue}
+            </a>
+          </Button>
         </div>
       </div>
 

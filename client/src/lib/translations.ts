@@ -13,8 +13,9 @@ export const translations = {
     },
     hero: {
       tagline: 'The Healthy Crunch',
-      headingLine1: 'Premium roasted Foxnuts from India.',
+      headingLine1: 'POPTUM: An online e-commerce platform for premium roasted makhana (foxnut) snacks from India.',
       headingLine2: 'Guilt-free, nutritious, and irresistibly delicious.',
+      headingLine2Items: ['Guilt-Free', 'Nutritious', 'Irresistibly Delicious'],
       headingLine3: "Order now and experience the crunch everyone's talking about.",
       exploreFlavours: 'Explore Flavours',
       downloadCatalogue: 'Download Catalogue',
@@ -35,7 +36,7 @@ export const translations = {
       source: 'The Source',
       sourceText: 'Makhana, or fox nuts, originates from Bihar, India. This ancient superfood is antioxidant-rich, protein-rich, and low in calories, offering a wholesome, guilt-free snacking experience for global consumers.',
       platform: 'Our Platform',
-      platformText: 'POPTUM is an online e-commerce platform for premium roasted makhana (foxnut) snacks. Customers can browse products, create accounts, add products to their cart, place orders, make payments where supported, and receive order-related communications. Customer information is used for purposes such as account authentication, order processing, payment processing where applicable, and order fulfillment.',
+      platformText: 'Customers can browse products, create accounts, add products to their cart, place orders, make payments where supported, and receive order-related communications. Customer information is used for purposes such as account authentication, order processing, payment processing where applicable, and order fulfillment.',
     },
     flavours: {
       title: 'Our Flavours',
@@ -324,8 +325,9 @@ export const translations = {
     },
     hero: {
       tagline: 'Der Gesunde Knuspergenuss',
-      headingLine1: 'Premium geröstetes Fuchsnüsse von Indien.',
-      headingLine2: 'Schuldfrei snacken – nahrhaft und unwiderstehlich lecker.',
+      headingLine1: 'POPTUM: Eine Online-E-Commerce-Plattform für hochwertige geröstete Makhana-Snacks (Fuchsnüsse) aus Indien.',
+      headingLine2: 'Schuldfrei – nahrhaft und unwiderstehlich lecker.',
+      headingLine2Items: ['Schuldfrei', 'Nahrhaft', 'Unwiderstehlich Lecker'],
       headingLine3: 'Jetzt bestellen und den Knuspermoment erleben, über den alle sprechen.',
       exploreFlavours: 'Geschmacksrichtungen Entdecken',
       downloadCatalogue: 'Katalog Herunterladen',
@@ -345,7 +347,7 @@ export const translations = {
       source: 'Die Quelle',
       sourceText: 'Makhana, oder Fuchsnüsse, stammt aus Bihar, Indien. Dieses uralte Superfood ist reich an Antioxidantien, proteinreich und kalorienarm und bietet ein gesundes, schuldenfreies Snackerlebnis für globale Verbraucher.',
       platform: 'Unsere Plattform',
-      platformText: 'POPTUM ist eine Online-E-Commerce-Plattform für erstklassige geröstete Makhana-Snacks (Fuchsnüsse). Kunden können Produkte durchsuchen, Konten erstellen, Produkte in ihren Warenkorb legen, Bestellungen aufgeben, Zahlungen vornehmen (sofern unterstützt) und bestellungsbezogene Mitteilungen erhalten. Kundeninformationen werden für Zwecke wie die Kontoauthentifizierung, die Bestellabwicklung, die Zahlungsabwicklung (falls zutreffend) und die Auftragsabwicklung verwendet.',
+      platformText: 'Kunden können Produkte durchsuchen, Konten erstellen, Produkte in ihren Warenkorb legen, Bestellungen aufgeben, Zahlungen vornehmen (sofern unterstützt) und bestellungsbezogene Mitteilungen erhalten. Kundeninformationen werden für Zwecke wie die Kontoauthentifizierung, die Bestellabwicklung, die Zahlungsabwicklung (falls zutreffend) und die Auftragsabwicklung verwendet.',
     },
     flavours: {
       title: 'Unsere Geschmacksrichtungen',
