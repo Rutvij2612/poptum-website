@@ -220,7 +220,7 @@ export default function Hero() {
         <div className="mb-8 max-w-3xl mx-auto animate-fade-in space-y-4 drop-shadow-sm">
           {/* 1. Purpose description (subtle, clean, elegant text paragraph) */}
           <p
-            className="text-xs sm:text-sm font-medium tracking-wide text-foreground/60 max-w-xl mx-auto leading-relaxed"
+            className="text-xs sm:text-sm font-medium tracking-wide text-foreground/80 max-w-xl mx-auto leading-relaxed"
             style={{ fontFamily: 'var(--font-sans)' }}
           >
             {t.hero.headingLine1}
