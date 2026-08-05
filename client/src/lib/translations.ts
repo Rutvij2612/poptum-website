@@ -13,7 +13,7 @@ export const translations = {
     },
     hero: {
       tagline: 'The Healthy Crunch',
-      headingLine1: 'Poptum : An online e-commerce platform for premium roasted makhana (foxnut) snacks from India.',
+      headingLine1: 'Poptum : An online e-commerce platform for premium roasted makhana (foxnut) snacks from India. Browse our products, create an account, add items to your cart, place orders, and receive order-related updates.',
       headingLine2: 'Guilt-free, nutritious, and irresistibly delicious.',
       headingLine2Items: ['Guilt-Free', 'Nutritious', 'Irresistibly Delicious'],
       headingLine3: "Order now and experience the crunch everyone's talking about.",
@@ -325,7 +325,7 @@ export const translations = {
     },
     hero: {
       tagline: 'Der Gesunde Knuspergenuss',
-      headingLine1: 'Poptum : Eine Online-E-Commerce-Plattform für hochwertige geröstete Makhana-Snacks (Fuchsnüsse) aus Indien.',
+      headingLine1: 'Poptum : Eine Online-E-Commerce-Plattform für hochwertige geröstete Makhana-Snacks (Fuchsnüsse) aus Indien. Durchstöbern Sie unser Produktsortiment, erstellen Sie ein Konto, legen Sie Artikel in den Warenkorb, geben Sie Bestellungen auf und erhalten Sie Informationen zu Ihren Bestellungen.',
       headingLine2: 'Schuldfrei – nahrhaft und unwiderstehlich lecker.',
       headingLine2Items: ['Schuldfrei', 'Nahrhaft', 'Unwiderstehlich Lecker'],
       headingLine3: 'Jetzt bestellen und den Knuspermoment erleben, über den alle sprechen.',
