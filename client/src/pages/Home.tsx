@@ -20,10 +20,12 @@ import PresenceSection from '@/components/PresenceSection';
 import ContactSection from '@/components/ContactSection';
 import Footer from '@/components/Footer';
 import LoadingAnimation from '@/components/LoadingAnimation';
+import LegalNotice from '@/components/LegalNotice';
 
 export default function Home() {
   const [showLoading, setShowLoading] = useState(true);
   const [isAppReady, setIsAppReady] = useState(false);
+  const [heroAnimationFinished, setHeroAnimationFinished] = useState(false);
 
   useEffect(() => {
     let isMounted = true;
@@ -97,7 +99,7 @@ export default function Home() {
       >
         <Navbar />
         <main>
-          <Hero />
+          <Hero onAnimationComplete={() => setHeroAnimationFinished(true)} />
           <AboutSection />
           {/* Bihar farms section temporarily hidden */}
           {/* <BiharFarms /> */}
@@ -116,6 +118,7 @@ export default function Home() {
           <ContactSection />
         </main>
         <Footer />
+        <LegalNotice show={heroAnimationFinished && !showLoading} />
       </motion.div>
     </>
   );

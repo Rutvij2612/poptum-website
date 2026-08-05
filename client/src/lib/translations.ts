@@ -312,6 +312,13 @@ export const translations = {
         noIssue: 'No issue or complaint recorded for this order.',
       }
     },
+    legalNotice: {
+      title: 'Privacy & Terms',
+      message: 'Please review our Privacy Policy and Terms & Conditions to learn more about how POPTUM operates and how customer information is handled.',
+      privacyLink: 'Privacy Policy',
+      termsLink: 'Terms & Conditions',
+      dismissBtn: 'Got it',
+    },
   },
   de: {
     nav: {
@@ -622,6 +629,13 @@ export const translations = {
         issueTitle: 'Kundenproblem / Beschwerde',
         noIssue: 'Für diese Bestellung wurde kein Problem oder keine Beschwerde aufgezeichnet.',
       }
+    },
+    legalNotice: {
+      title: 'Datenschutz & AGB',
+      message: 'Bitte lesen Sie unsere Datenschutzrichtlinie und Allgemeinen Geschäftsbedingungen, um mehr über POPTUM und den Umgang mit Kundeninformationen zu erfahren.',
+      privacyLink: 'Datenschutzrichtlinie',
+      termsLink: 'Allgemeine Geschäftsbedingungen',
+      dismissBtn: 'Verstanden',
     },
   },
 };

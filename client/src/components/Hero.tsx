@@ -22,7 +22,7 @@ type Particle = {
   delay: number;
 };
 
-export default function Hero() {
+export default function Hero({ onAnimationComplete }: { onAnimationComplete?: () => void }) {
   const { t } = useLanguage();
   const [particles, setParticles] = useState<Particle[]>([]);
 
@@ -205,6 +205,7 @@ export default function Hero() {
           initial={{ rotate: -15, x: -20, y: 60, opacity: 0 }}
           animate={{ rotate: -22, x: -50, y: 10, opacity: 1 }}
           transition={{ duration: 1.2, ease: 'easeOut', delay: 0.2 }}
+          onAnimationComplete={onAnimationComplete}
         />
       </div>
 
